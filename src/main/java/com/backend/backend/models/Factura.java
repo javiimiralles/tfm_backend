@@ -1,0 +1,31 @@
+package com.backend.backend.models;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.Date;
+
+@Data
+@Entity
+@Table(name = "facturas")
+public class Factura {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "id_pedido", nullable = false)
+    private Long idPedido;
+
+    @Column(name = "id_empresa", nullable = false)
+    private Long idEmpresa;
+
+    @Column(name = "fecha_factura", nullable = false)
+    private Date fechaFactura;
+
+    @Column(name = "importe", nullable = false)
+    private Double importe;
+
+    @Column(name = "numero_factura", length = 50, nullable = false)
+    private String numeroFactura;
+}
