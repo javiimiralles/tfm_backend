@@ -1,7 +1,8 @@
 package com.backend.backend.services;
 
-import com.backend.backend.dto.LoginUsuarioDTO;
-import com.backend.backend.dto.RegistroEmpleadoDTO;
+import com.backend.backend.dto.LoginUsuarioForm;
+import com.backend.backend.dto.RegistroEmpleadoForm;
+import com.backend.backend.exceptions.BadRequestException;
 import com.backend.backend.models.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,16 +41,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void registrarEmpleado(RegistroEmpleadoDTO registroEmpleadoDTO) {
-        logger.log(Level.INFO, "Registrando empleado: {}", registroEmpleadoDTO.getEmailUsuario());
+    public void registrarEmpleado(RegistroEmpleadoForm registroEmpleadoForm) {
+        logger.log(Level.INFO, "Registrando empleado: {}", registroEmpleadoForm.getEmailUsuario());
 
         // Crear y guardar la empresa a la que pertenece el usuario
         Empresa empresa = new Empresa();
-        empresa.setNombre(registroEmpleadoDTO.getNombreEmpresa());
-        empresa.setRazonSocial(registroEmpleadoDTO.getRazonSocialEmpresa());
-        empresa.setDireccion(registroEmpleadoDTO.getDireccionEmpresa());
-        empresa.setTelefono(registroEmpleadoDTO.getTelefonoEmpresa());
-        empresa.setEmail(registroEmpleadoDTO.getEmailEmpresa());
+        empresa.setNombre(registroEmpleadoForm.getNombreEmpresa());
+        empresa.setRazonSocial(registroEmpleadoForm.getRazonSocialEmpresa());
+        empresa.setDireccion(registroEmpleadoForm.getDireccionEmpresa());
+        empresa.setTelefono(registroEmpleadoForm.getTelefonoEmpresa());
+        empresa.setEmail(registroEmpleadoForm.getEmailEmpresa());
         empresaService.createEmpresa(empresa);
 
         // Crear y guardar el rol de ADMIN
@@ -70,8 +71,8 @@ public class AuthServiceImpl implements AuthService {
 
         // Crear y guardar el usuario
         Usuario usuario = new Usuario();
-        usuario.setEmail(registroEmpleadoDTO.getEmailUsuario());
-        usuario.setPassword(passwordEncoder.encode(registroEmpleadoDTO.getPasswordUsuario()));
+        usuario.setEmail(registroEmpleadoForm.getEmailUsuario());
+        usuario.setPassword(passwordEncoder.encode(registroEmpleadoForm.getPasswordUsuario()));
         usuario.setIdRol(rol.getId());
         usuarioService.createUser(usuario);
 
@@ -79,24 +80,30 @@ public class AuthServiceImpl implements AuthService {
         Empleado empleado = new Empleado();
         empleado.setIdEmpresa(empresa.getId());
         empleado.setIdUsuario(usuario.getId());
-        empleado.setNombre(registroEmpleadoDTO.getNombreEmpleado());
-        empleado.setApellidos(registroEmpleadoDTO.getApellidosEmpleado());
-        empleado.setTelefono(registroEmpleadoDTO.getTelefonoEmpleado());
-        empleado.setDireccion(registroEmpleadoDTO.getDireccionEmpleado());
-        empleado.setFechaNacimiento(registroEmpleadoDTO.getFechaNacimientoEmpleado());
-        empleado.setGenero(registroEmpleadoDTO.getGeneroEmpleado());
+        empleado.setNombre(registroEmpleadoForm.getNombreEmpleado());
+        empleado.setApellidos(registroEmpleadoForm.getApellidosEmpleado());
+        empleado.setTelefono(registroEmpleadoForm.getTelefonoEmpleado());
+        empleado.setDireccion(registroEmpleadoForm.getDireccionEmpleado());
+        empleado.setFechaNacimiento(registroEmpleadoForm.getFechaNacimientoEmpleado());
+        empleado.setGenero(registroEmpleadoForm.getGeneroEmpleado());
         empleado.setIdRespAlta(usuario.getId());
         empleado.setFechaAlta(new Date());
         empleadoService.createEmpleado(empleado);
     }
 
     @Override
-    public Usuario login(LoginUsuarioDTO loginUsuarioDTO) {
-        logger.log(Level.INFO, "Iniciando sesión: {}", loginUsuarioDTO.getEmail());
-        Usuario usuario = usuarioService.getUsuarioByEmail(loginUsuarioDTO.getEmail());
-        if (usuario != null && passwordEncoder.matches(loginUsuarioDTO.getPassword(), usuario.getPassword())) {
-            return usuario;
+    public Usuario authenticate(LoginUsuarioForm loginUsuarioForm) {
+        logger.log(Level.INFO, "Iniciando sesión: {}", loginUsuarioForm.getEmail());
+
+        Usuario usuario = usuarioService.getUsuarioByEmail(loginUsuarioForm.getEmail());
+        if (usuario == null) {
+            throw new BadRequestException("Usuario o contraseña incorrectos");
         }
-        return null;
+
+        if (!passwordEncoder.matches(loginUsuarioForm.getPassword(), usuario.getPassword())) {
+            throw new BadRequestException("Usuario o contraseña incorrectos");
+        }
+
+        return usuario;
     }
 }

@@ -1,13 +1,13 @@
 package com.backend.backend.services;
 
-import com.backend.backend.dto.LoginUsuarioDTO;
-import com.backend.backend.dto.RegistroEmpleadoDTO;
+import com.backend.backend.dto.LoginUsuarioForm;
+import com.backend.backend.dto.RegistroEmpleadoForm;
 import com.backend.backend.models.Usuario;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface AuthService {
     @Transactional
-    void registrarEmpleado(RegistroEmpleadoDTO registroEmpleadoDTO);
+    void registrarEmpleado(RegistroEmpleadoForm registroEmpleadoForm);
 
-    Usuario login(LoginUsuarioDTO loginUsuarioDTO);
+    Usuario authenticate(LoginUsuarioForm loginUsuarioForm);
 }

@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class RegistroEmpleadoDTO {
+public class RegistroEmpleadoForm {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 150, message = "El nombre no puede tener más de 150 caracteres")
