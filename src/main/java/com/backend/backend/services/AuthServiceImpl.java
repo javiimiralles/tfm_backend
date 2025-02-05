@@ -4,6 +4,7 @@ import com.backend.backend.dto.LoginUsuarioForm;
 import com.backend.backend.dto.RegistroEmpleadoForm;
 import com.backend.backend.exceptions.BadRequestException;
 import com.backend.backend.models.*;
+import com.backend.backend.utils.JWTUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +18,27 @@ import java.util.logging.Logger;
 public class AuthServiceImpl implements AuthService {
 
     private final UsuarioService usuarioService;
+
     private final EmpresaService empresaService;
+
     private final RolService rolService;
+
     private final AccionService accionService;
+
     private final PermisoService permisoService;
+
     private final EmpleadoService empleadoService;
+
     private final PasswordEncoder passwordEncoder;
+
+    private final JWTUtil jwtUtil;
 
     Logger logger = Logger.getLogger(AuthServiceImpl.class.getName());
 
     public AuthServiceImpl(EmpresaService empresaService, UsuarioService usuarioService,
                           RolService rolService, EmpleadoService empleadoService,
                           AccionService accionService, PermisoService permisoService,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
         this.usuarioService = usuarioService;
         this.empresaService = empresaService;
         this.rolService = rolService;
@@ -37,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
         this.permisoService = permisoService;
         this.empleadoService = empleadoService;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
@@ -102,6 +112,19 @@ public class AuthServiceImpl implements AuthService {
 
         if (!passwordEncoder.matches(loginUsuarioForm.getPassword(), usuario.getPassword())) {
             throw new BadRequestException("Usuario o contraseña incorrectos");
+        }
+
+        return usuario;
+    }
+
+    @Override
+    public Usuario verifyToken(String token) {
+        logger.log(Level.INFO, "Refrescando token de usuario");
+
+        Long idUsuario = jwtUtil.getUserIdFromToken(token);
+        Usuario usuario = usuarioService.getUsuarioById(idUsuario);
+        if (usuario == null) {
+            throw new BadRequestException("Usuario no encontrado");
         }
 
         return usuario;

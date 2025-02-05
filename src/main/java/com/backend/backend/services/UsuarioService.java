@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UsuarioService {
 
+    Usuario getUsuarioById(Long id);
+
     Usuario getUsuarioByEmail(String email);
 
     @Transactional

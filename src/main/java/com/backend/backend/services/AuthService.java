@@ -10,4 +10,6 @@ public interface AuthService {
     void registrarEmpleado(RegistroEmpleadoForm registroEmpleadoForm);
 
     Usuario authenticate(LoginUsuarioForm loginUsuarioForm);
+
+    Usuario verifyToken(String token);
 }
