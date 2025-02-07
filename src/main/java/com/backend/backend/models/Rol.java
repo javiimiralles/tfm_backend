@@ -3,6 +3,8 @@ package com.backend.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "roles")
@@ -20,4 +22,7 @@ public class Rol {
 
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;
+
+    @OneToMany(mappedBy = "rol", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Permiso> permisos;
 }

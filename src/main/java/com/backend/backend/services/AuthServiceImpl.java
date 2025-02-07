@@ -2,9 +2,12 @@ package com.backend.backend.services;
 
 import com.backend.backend.dto.LoginUsuarioForm;
 import com.backend.backend.dto.RegistroEmpleadoForm;
-import com.backend.backend.exceptions.BadRequestException;
+import com.backend.backend.dto.UsuarioDTO;
+import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.models.*;
 import com.backend.backend.utils.JWTUtil;
+import com.backend.backend.utils.MapperUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +36,14 @@ public class AuthServiceImpl implements AuthService {
 
     private final JWTUtil jwtUtil;
 
+    private final MapperUtil mapperUtil;
+
     Logger logger = Logger.getLogger(AuthServiceImpl.class.getName());
 
     public AuthServiceImpl(EmpresaService empresaService, UsuarioService usuarioService,
                           RolService rolService, EmpleadoService empleadoService,
                           AccionService accionService, PermisoService permisoService,
-                          PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
+                          PasswordEncoder passwordEncoder, JWTUtil jwtUtil, MapperUtil mapperUtil) {
         this.usuarioService = usuarioService;
         this.empresaService = empresaService;
         this.rolService = rolService;
@@ -47,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
         this.empleadoService = empleadoService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.mapperUtil = mapperUtil;
     }
 
     @Transactional
@@ -74,8 +80,8 @@ public class AuthServiceImpl implements AuthService {
         List<Accion> acciones = accionService.getAcciones();
         for (Accion accion : acciones) {
             Permiso permiso = new Permiso();
-            permiso.setIdRol(rol.getId());
-            permiso.setIdAccion(accion.getId());
+            permiso.setRol(rol);
+            permiso.setAccion(accion);
             permisoService.createPermiso(permiso);
         }
 
@@ -83,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
         Usuario usuario = new Usuario();
         usuario.setEmail(registroEmpleadoForm.getEmailUsuario());
         usuario.setPassword(passwordEncoder.encode(registroEmpleadoForm.getPasswordUsuario()));
-        usuario.setIdRol(rol.getId());
+        usuario.setRol(rol);
         usuarioService.createUser(usuario);
 
         // Crear y guardar el empleado asociado al usuario
@@ -102,29 +108,30 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Usuario authenticate(LoginUsuarioForm loginUsuarioForm) {
+    public UsuarioDTO authenticate(LoginUsuarioForm loginUsuarioForm) {
         logger.log(Level.INFO, "Iniciando sesión: {}", loginUsuarioForm.getEmail());
 
         Usuario usuario = usuarioService.getUsuarioByEmail(loginUsuarioForm.getEmail());
         if (usuario == null) {
-            throw new BadRequestException("Usuario o contraseña incorrectos");
+            throw new BusinessException("Usuario o contraseña incorrectos");
         }
 
         if (!passwordEncoder.matches(loginUsuarioForm.getPassword(), usuario.getPassword())) {
-            throw new BadRequestException("Usuario o contraseña incorrectos");
+            throw new BusinessException("Usuario o contraseña incorrectos");
         }
 
-        return usuario;
+        return mapperUtil.mapUsuarioToUsuarioDTO(usuario);
     }
 
     @Override
-    public Usuario verifyToken(String token) {
+    public UsuarioDTO verifyToken(String token) {
         logger.log(Level.INFO, "Refrescando token de usuario");
 
-        Long idUsuario = jwtUtil.getUserIdFromToken(token);
-        Usuario usuario = usuarioService.getUsuarioById(idUsuario);
+        Claims claims = jwtUtil.extractClaimsFromToken(token);
+        Long idUsuario = Long.parseLong(claims.getSubject());
+        UsuarioDTO usuario = usuarioService.getUsuarioDTOById(idUsuario);
         if (usuario == null) {
-            throw new BadRequestException("Usuario no encontrado");
+            throw new BusinessException("Usuario no encontrado");
         }
 
         return usuario;

@@ -1,4 +1,4 @@
-package com.backend.backend.config;
+package com.backend.backend.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     @Value("${service.security.secure-key-username}")
     private String secureKeyUsername;
@@ -25,11 +27,11 @@ public class SecurityConfig {
     @Value("${service.security.secure-key-password}")
     private String secureKeyPassword;
 
-    @Value("${service.security.secure-key-username-2}")
-    private String secureKeyUsername2;
+    private final PermissionInterceptor permissionInterceptor;
 
-    @Value("${service.security.secure-key-password-2}")
-    private String secureKeyPassword2;
+    public SecurityConfig(PermissionInterceptor permissionInterceptor) {
+        this.permissionInterceptor = permissionInterceptor;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,13 +47,7 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        UserDetails dev = User.builder()
-                .username(secureKeyUsername2)
-                .password(passwordEncoder.encode(secureKeyPassword2))
-                .roles("DEV")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, dev);
+        return new InMemoryUserDetailsManager(admin);
     }
 
     @Bean
@@ -61,6 +57,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").hasRole("ADMIN")
+                        .requestMatchers("/api/clientes/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -79,4 +76,8 @@ public class SecurityConfig {
         return new CorsFilter(source);
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(permissionInterceptor);
+    }
 }

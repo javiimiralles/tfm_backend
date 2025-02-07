@@ -3,6 +3,9 @@ package com.backend.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Data
 @Entity
 @Table(name = "usuarios")
@@ -18,7 +21,13 @@ public class Usuario {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "id_rol", nullable = false)
-    private Long idRol;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_rol", referencedColumnName = "id", nullable = false)
+    private Rol rol;
 
+    public Set<String> getAccionesPermitidas() {
+        return this.rol.getPermisos().stream()
+                .map(permiso -> permiso.getAccion().getAccion())
+                .collect(Collectors.toSet());
+    }
 }

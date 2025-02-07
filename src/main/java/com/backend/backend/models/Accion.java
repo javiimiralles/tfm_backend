@@ -17,4 +17,7 @@ public class Accion {
 
     @Column(name = "descripcion", length = 1000)
     private String descripcion;
+
+    @Column(name = "accion", length = 50, nullable = false)
+    private String accion;
 }

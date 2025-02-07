@@ -12,9 +12,11 @@ public class Permiso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_rol", nullable = false)
-    private Long idRol;
+    @ManyToOne
+    @JoinColumn(name = "id_rol", referencedColumnName = "id", nullable = false)
+    private Rol rol;
 
-    @Column(name = "id_accion", nullable = false)
-    private Long idAccion;
+    @ManyToOne
+    @JoinColumn(name = "id_accion", referencedColumnName = "id", nullable = false)
+    private Accion accion;
 }
