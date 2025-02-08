@@ -24,6 +24,17 @@ public class RegistroEmpleadoForm {
     @Size(max = 255, message = "La dirección no puede tener más de 255 caracteres")
     private String direccionEmpleado;
 
+    private Long idPaisEmpleado;
+
+    @Size(max = 100, message = "La provincia no puede tener más de 100 caracteres")
+    private String provinciaEmpleado;
+
+    @Size(max = 100, message = "La población no puede tener más de 100 caracteres")
+    private String poblacionEmpleado;
+
+    @Size(max = 10, message = "El código postal no puede tener más de 10 caracteres")
+    private String codigoPostalEmpleado;
+
     private Date fechaNacimientoEmpleado;
 
     private GeneroEnum generoEmpleado;

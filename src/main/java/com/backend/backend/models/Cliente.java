@@ -23,6 +23,9 @@ public class Cliente {
     @Column(name = "apellidos", length = 150)
     private String apellidos;
 
+    @Column(name = "nif", length = 9, unique = true)
+    private String nif;
+
     @Column(name = "email", length = 150, unique = true, nullable = false)
     private String email;
 
@@ -31,6 +34,19 @@ public class Cliente {
 
     @Column(name = "direccion")
     private String direccion;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_pais", referencedColumnName = "id", nullable = false)
+    private Pais pais;
+
+    @Column(name = "provincia", length = 100)
+    private String provincia;
+
+    @Column(name = "poblacion", length = 100)
+    private String poblacion;
+
+    @Column(name = "codigo_postal", length = 10)
+    private String codigoPostal;
 
     @Column(name = "id_resp_alta", nullable = false)
     private Long idRespAlta;
