@@ -54,7 +54,7 @@ CREATE TABLE proveedores (
     id SERIAL PRIMARY KEY,
     id_empresa INTEGER NOT NULL,
     nombre VARCHAR(150) NOT NULL,
-    email VARCHAR(150) NOT NULL,
+    email VARCHAR(150),
     telefono VARCHAR(15),
     direccion VARCHAR(255),
     id_resp_alta INTEGER NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE detalle_pedidos_proveedores (
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
     id_empresa INTEGER NOT NULL,
-    nombre VARCHAR(150) NOT NULL,
+    nombre VARCHAR(150),
     apellidos VARCHAR(150),
     email VARCHAR(150) UNIQUE NOT NULL,
     telefono VARCHAR(15),

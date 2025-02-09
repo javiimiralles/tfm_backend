@@ -1,7 +1,7 @@
 package com.backend.backend.services;
 
 import com.backend.backend.dto.LoginUsuarioForm;
-import com.backend.backend.dto.RegistroEmpleadoForm;
+import com.backend.backend.dto.RegistroUsuarioForm;
 import com.backend.backend.dto.UsuarioDTO;
 import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.models.*;
@@ -57,16 +57,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void registrarEmpleado(RegistroEmpleadoForm registroEmpleadoForm) {
-        logger.log(Level.INFO, "Registrando empleado: {}", registroEmpleadoForm.getEmailUsuario());
+    public void registrarEmpleado(RegistroUsuarioForm registroUsuarioForm) {
+        logger.log(Level.INFO, "Registrando empleado: {}", registroUsuarioForm.getEmailUsuario());
 
         // Crear y guardar la empresa a la que pertenece el usuario
         Empresa empresa = new Empresa();
-        empresa.setNombre(registroEmpleadoForm.getNombreEmpresa());
-        empresa.setRazonSocial(registroEmpleadoForm.getRazonSocialEmpresa());
-        empresa.setDireccion(registroEmpleadoForm.getDireccionEmpresa());
-        empresa.setTelefono(registroEmpleadoForm.getTelefonoEmpresa());
-        empresa.setEmail(registroEmpleadoForm.getEmailEmpresa());
+        empresa.setNombre(registroUsuarioForm.getNombreEmpresa());
+        empresa.setRazonSocial(registroUsuarioForm.getRazonSocialEmpresa());
+        empresa.setDireccion(registroUsuarioForm.getDireccionEmpresa());
+        empresa.setTelefono(registroUsuarioForm.getTelefonoEmpresa());
+        empresa.setEmail(registroUsuarioForm.getEmailEmpresa());
         empresaService.createEmpresa(empresa);
 
         // Crear y guardar el rol de ADMIN
@@ -87,8 +87,8 @@ public class AuthServiceImpl implements AuthService {
 
         // Crear y guardar el usuario
         Usuario usuario = new Usuario();
-        usuario.setEmail(registroEmpleadoForm.getEmailUsuario());
-        usuario.setPassword(passwordEncoder.encode(registroEmpleadoForm.getPasswordUsuario()));
+        usuario.setEmail(registroUsuarioForm.getEmailUsuario());
+        usuario.setPassword(passwordEncoder.encode(registroUsuarioForm.getPasswordUsuario()));
         usuario.setRol(rol);
         usuarioService.createUser(usuario);
 
@@ -96,12 +96,12 @@ public class AuthServiceImpl implements AuthService {
         Empleado empleado = new Empleado();
         empleado.setIdEmpresa(empresa.getId());
         empleado.setIdUsuario(usuario.getId());
-        empleado.setNombre(registroEmpleadoForm.getNombreEmpleado());
-        empleado.setApellidos(registroEmpleadoForm.getApellidosEmpleado());
-        empleado.setTelefono(registroEmpleadoForm.getTelefonoEmpleado());
-        empleado.setDireccion(registroEmpleadoForm.getDireccionEmpleado());
-        empleado.setFechaNacimiento(registroEmpleadoForm.getFechaNacimientoEmpleado());
-        empleado.setGenero(registroEmpleadoForm.getGeneroEmpleado());
+        empleado.setNombre(registroUsuarioForm.getNombreEmpleado());
+        empleado.setApellidos(registroUsuarioForm.getApellidosEmpleado());
+        empleado.setTelefono(registroUsuarioForm.getTelefonoEmpleado());
+        empleado.setDireccion(registroUsuarioForm.getDireccionEmpleado());
+        empleado.setFechaNacimiento(registroUsuarioForm.getFechaNacimientoEmpleado());
+        empleado.setGenero(registroUsuarioForm.getGeneroEmpleado());
         empleado.setIdRespAlta(usuario.getId());
         empleado.setFechaAlta(new Date());
         empleadoService.createEmpleado(empleado);

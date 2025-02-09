@@ -2,9 +2,8 @@ package com.backend.backend.controllers;
 
 import com.backend.backend.dto.HttpResponse;
 import com.backend.backend.dto.LoginUsuarioForm;
-import com.backend.backend.dto.RegistroEmpleadoForm;
+import com.backend.backend.dto.RegistroUsuarioForm;
 import com.backend.backend.dto.UsuarioDTO;
-import com.backend.backend.models.Usuario;
 import com.backend.backend.services.AuthService;
 import com.backend.backend.utils.JWTUtil;
 import jakarta.validation.Valid;
@@ -25,8 +24,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody RegistroEmpleadoForm registroEmpleadoForm) {
-        authService.registrarEmpleado(registroEmpleadoForm);
+    public ResponseEntity<Object> register(@Valid @RequestBody RegistroUsuarioForm registroUsuarioForm) {
+        authService.registrarEmpleado(registroUsuarioForm);
         return ResponseEntity.ok(new HttpResponse(true, "Empleado registrado correctamente"));
     }
 
