@@ -12,6 +12,7 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "id_empresa", nullable = false)
@@ -36,7 +37,7 @@ public class Cliente {
     private String direccion;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_pais", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id_pais", referencedColumnName = "id")
     private Pais pais;
 
     @Column(name = "provincia", length = 100)

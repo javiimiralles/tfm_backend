@@ -24,6 +24,9 @@ public class EmpleadoController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getEmpleadoById(@PathVariable Long id) {
         Empleado empleado = empleadoService.getEmpleadoById(id);
+        if (empleado == null) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, "Empleado no encontrado"));
+        }
         return ResponseEntity.ok(new HttpResponse(true, "Empleado obtenido correctamente", empleado));
     }
 
@@ -31,6 +34,9 @@ public class EmpleadoController {
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<Object> getEmpleadoByIdUsuario(@PathVariable Long idUsuario) {
         Empleado empleado = empleadoService.getEmpleadoByIdUsuario(idUsuario);
+        if (empleado == null) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, "Empleado no encontrado"));
+        }
         return ResponseEntity.ok(new HttpResponse(true, "Empleado obtenido correctamente", empleado));
     }
 }
