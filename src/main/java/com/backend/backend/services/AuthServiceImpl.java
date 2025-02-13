@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
         // Crear y guardar el empleado asociado al usuario
         Empleado empleado = new Empleado();
         empleado.setIdEmpresa(empresa.getId());
-        empleado.setIdUsuario(usuario.getId());
+        empleado.setUsuario(usuario);
         empleado.setNombre(registroUsuarioForm.getNombreEmpleado());
         empleado.setApellidos(registroUsuarioForm.getApellidosEmpleado());
         empleado.setTelefono(registroUsuarioForm.getTelefonoEmpleado());

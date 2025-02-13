@@ -18,8 +18,9 @@ public class Empleado {
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;
 
-    @Column(name = "id_usuario", nullable = false)
-    private Long idUsuario;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id", nullable = false)
+    private Usuario usuario;
 
     @Column(name = "nombre", length = 150, nullable = false)
     private String nombre;

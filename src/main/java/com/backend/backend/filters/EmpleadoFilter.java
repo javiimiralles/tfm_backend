@@ -1,9 +1,14 @@
 package com.backend.backend.filters;
 
 import lombok.Data;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Data
 public class EmpleadoFilter {
+
+    private Long id;
 
     private Long idEmpresa;
 
@@ -13,11 +18,26 @@ public class EmpleadoFilter {
 
     private String apellidos;
 
-    private String telefono;
+    private Boolean activo;
 
-    private String direccion;
+    private String rol;
 
-    private String fechaNacimiento;
+    private String query;
 
-    private String genero;
+    // Paginacion
+    private Integer page;
+
+    private Integer size;
+
+    private String sortBy;
+
+    private String sortDirection;
+
+    public Pageable getPageable() {
+        Integer page = this.page == null ? 0 : this.page;
+        Integer size = this.size == null ? 10 : this.size;
+        String sortBy = this.sortBy == null ? "nombre" : this.sortBy;
+        String sortDirection = this.sortDirection == null ? "ASC" : this.sortDirection;
+        return PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+    }
 }

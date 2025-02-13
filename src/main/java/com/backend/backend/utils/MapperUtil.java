@@ -1,8 +1,10 @@
 package com.backend.backend.utils;
 
 import com.backend.backend.dto.ClienteDTO;
+import com.backend.backend.dto.EmpleadoDTO;
 import com.backend.backend.dto.UsuarioDTO;
 import com.backend.backend.models.Cliente;
+import com.backend.backend.models.Empleado;
 import com.backend.backend.models.Usuario;
 import org.springframework.stereotype.Component;
 
@@ -26,5 +28,17 @@ public class MapperUtil {
         clienteDTO.setEmail(cliente.getEmail());
         clienteDTO.setFechaAlta(cliente.getFechaAlta());
         return clienteDTO;
+    }
+
+    public EmpleadoDTO mapEmpleadoToEmpleadoDTO(Empleado empleado) {
+        EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+        empleadoDTO.setId(empleado.getId());
+        empleadoDTO.setIdEmpresa(empleado.getIdEmpresa());
+        empleadoDTO.setNombre(empleado.getNombre());
+        empleadoDTO.setApellidos(empleado.getApellidos());
+        empleadoDTO.setRol(empleado.getUsuario().getRol().getNombre());
+        empleadoDTO.setFechaAlta(empleado.getFechaAlta());
+        empleadoDTO.setFechaBaja(empleado.getFechaBaja());
+        return empleadoDTO;
     }
 }

@@ -20,7 +20,6 @@ public class ClienteSpecification {
             if (filter.getId() != null) {
                 predicates.add(cb.equal(root.get("id"), filter.getId()));
             }
-
             if (filter.getIdEmpresa() != null) {
                 predicates.add(cb.equal(root.get("idEmpresa"), filter.getIdEmpresa()));
             }

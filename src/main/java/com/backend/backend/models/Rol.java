@@ -1,5 +1,6 @@
 package com.backend.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,5 +25,6 @@ public class Rol {
     private Long idEmpresa;
 
     @OneToMany(mappedBy = "rol", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Permiso> permisos;
 }

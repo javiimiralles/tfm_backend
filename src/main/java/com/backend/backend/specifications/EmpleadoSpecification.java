@@ -17,6 +17,9 @@ public class EmpleadoSpecification {
         return (Root<Empleado> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (filter.getId() != null) {
+                predicates.add(cb.equal(root.get("id"), filter.getId()));
+            }
             if (filter.getIdEmpresa() != null) {
                 predicates.add(cb.equal(root.get("idEmpresa"), filter.getIdEmpresa()));
             }
@@ -29,17 +32,24 @@ public class EmpleadoSpecification {
             if (filter.getApellidos() != null && !filter.getApellidos().isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("apellidos")), "%" + filter.getApellidos().toLowerCase() + "%"));
             }
-            if (filter.getTelefono() != null && !filter.getTelefono().isEmpty()) {
-                predicates.add(cb.like(root.get("telefono"), "%" + filter.getTelefono() + "%"));
+            if (filter.getActivo() != null) {
+                if (Boolean.TRUE.equals(filter.getActivo())) {
+                    predicates.add(cb.isNull(root.get("fechaBaja")));
+                } else {
+                    predicates.add(cb.isNotNull(root.get("fechaBaja")));
+                }
             }
-            if (filter.getDireccion() != null && !filter.getDireccion().isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get("direccion")), "%" + filter.getDireccion().toLowerCase() + "%"));
+            if (filter.getRol() != null && !filter.getRol().isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("rol")), filter.getRol().toLowerCase()));
             }
-            if (filter.getFechaNacimiento() != null && !filter.getFechaNacimiento().isEmpty()) {
-                predicates.add(cb.equal(root.get("fechaNacimiento"), filter.getFechaNacimiento()));
-            }
-            if (filter.getGenero() != null && !filter.getGenero().isEmpty()) {
-                predicates.add(cb.equal(root.get("genero"), filter.getGenero()));
+
+            if (filter.getQuery() != null && !filter.getQuery().isEmpty()) {
+                String queryText = "%" + filter.getQuery().toLowerCase() + "%";
+                Predicate searchPredicate = cb.or(
+                        cb.like(cb.lower(root.get("nombre")), queryText),
+                        cb.like(cb.lower(root.get("apellidos")), queryText)
+                );
+                predicates.add(searchPredicate);
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

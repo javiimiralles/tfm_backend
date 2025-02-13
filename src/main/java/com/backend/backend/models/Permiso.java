@@ -1,5 +1,6 @@
 package com.backend.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,8 +13,9 @@ public class Permiso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
     private Rol rol;
 
     @ManyToOne

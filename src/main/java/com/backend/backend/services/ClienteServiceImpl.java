@@ -54,6 +54,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Page<ClienteDTO> findClientesDTOByFilter(ClienteFilter filter) {
         logger.log(Level.INFO, "Obteniendo clientes con filtro: {}", filter);
+        if (filter.getIdEmpresa() == null) {
+            logger.log(Level.WARNING, "El idEmpresa es obligatorio");
+            throw new BusinessException("El idEmpresa es obligatorio");
+        }
         Specification<Cliente> spec = ClienteSpecification.withFilters(filter);
         Pageable pageable = filter.getPageable();
 
