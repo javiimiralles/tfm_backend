@@ -5,6 +5,8 @@ import com.backend.backend.repository.RolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -16,6 +18,12 @@ public class RolServiceImpl implements RolService {
 
     public RolServiceImpl(RolRepository rolRepository) {
         this.rolRepository = rolRepository;
+    }
+
+    @Override
+    public List<Rol> findRolesByIdEmpresa(Long idEmpresa) {
+        logger.log(Level.INFO ,"Buscando roles por idEmpresa:  {}" , idEmpresa);
+        return rolRepository.findByIdEmpresa(idEmpresa);
     }
 
     @Transactional

@@ -21,7 +21,7 @@ public class PaisController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Object> getPaises() {
+    public ResponseEntity<Object> findPaises() {
         List<Pais> paises = paisService.findPaises();
         return ResponseEntity.ok(new HttpResponse(true, "Paises obtenidos correctamente", paises));
     }

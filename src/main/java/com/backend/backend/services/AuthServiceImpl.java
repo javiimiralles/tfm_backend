@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void registrarEmpleado(RegistroUsuarioForm registroUsuarioForm) {
+    public void register(RegistroUsuarioForm registroUsuarioForm) {
         logger.log(Level.INFO, "Registrando empleado: {}", registroUsuarioForm.getEmailUsuario());
 
         // Crear y guardar la empresa a la que pertenece el usuario

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface AuthService {
 
     @Transactional
-    void registrarEmpleado(RegistroUsuarioForm registroUsuarioForm);
+    void register(RegistroUsuarioForm registroUsuarioForm);
 
     UsuarioDTO authenticate(LoginUsuarioForm loginUsuarioForm);
 

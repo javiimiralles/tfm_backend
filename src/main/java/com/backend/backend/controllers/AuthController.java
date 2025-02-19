@@ -25,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@Valid @RequestBody RegistroUsuarioForm registroUsuarioForm) {
-        authService.registrarEmpleado(registroUsuarioForm);
+        authService.register(registroUsuarioForm);
         return ResponseEntity.ok(new HttpResponse(true, "Empleado registrado correctamente"));
     }
 

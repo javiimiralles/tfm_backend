@@ -34,14 +34,14 @@ public class ClienteController {
 
     @RequiresPermission("ACCESO_CLIENTES")
     @GetMapping("/empresa/{idEmpresa}")
-    public ResponseEntity<Object> getClientesByEmpresa(@PathVariable Long idEmpresa) {
+    public ResponseEntity<Object> findClientesByEmpresa(@PathVariable Long idEmpresa) {
         List<Cliente> clientes = clienteService.findClientesByEmpresa(idEmpresa);
         return ResponseEntity.ok(new HttpResponse(true, "Clientes obtenidos correctamente", clientes));
     }
 
     @RequiresPermission("ACCESO_CLIENTES")
     @PostMapping("/filter")
-    public ResponseEntity<Object> getClientesDTOByFilter(@RequestBody ClienteFilter filter) {
+    public ResponseEntity<Object> findClientesDTOByFilter(@RequestBody ClienteFilter filter) {
         Page<ClienteDTO> clientes = clienteService.findClientesDTOByFilter(filter);
         return ResponseEntity.ok(new HttpResponse(true, "Clientes obtenidos correctamente", clientes));
     }
