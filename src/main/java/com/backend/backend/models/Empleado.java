@@ -28,6 +28,9 @@ public class Empleado {
     @Column(name = "apellidos", length = 150)
     private String apellidos;
 
+    @Column(name = "imagen_url")
+    private String imagenUrl;
+
     @Column(name = "nif", length = 9, unique = true)
     private String nif;
 

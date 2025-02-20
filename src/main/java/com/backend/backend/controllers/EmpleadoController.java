@@ -43,7 +43,11 @@ public class EmpleadoController {
     @RequiresPermission("ACCESO_EMPLEADOS")
     @PostMapping("/filter")
     public ResponseEntity<Object> findEmpleadosDTOByFilter(@RequestBody EmpleadoFilter filter) {
-        Page<EmpleadoDTO> empleados = empleadoService.findEmpleadosDTOByFilter(filter);
-        return ResponseEntity.ok(new HttpResponse(true, "Empleados obtenidos correctamente", empleados));
+        try {
+            Page<EmpleadoDTO> empleados = empleadoService.findEmpleadosDTOByFilter(filter);
+            return ResponseEntity.ok(new HttpResponse(true, "Empleados obtenidos correctamente", empleados));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
     }
 }

@@ -42,8 +42,12 @@ public class ClienteController {
     @RequiresPermission("ACCESO_CLIENTES")
     @PostMapping("/filter")
     public ResponseEntity<Object> findClientesDTOByFilter(@RequestBody ClienteFilter filter) {
-        Page<ClienteDTO> clientes = clienteService.findClientesDTOByFilter(filter);
-        return ResponseEntity.ok(new HttpResponse(true, "Clientes obtenidos correctamente", clientes));
+        try {
+            Page<ClienteDTO> clientes = clienteService.findClientesDTOByFilter(filter);
+            return ResponseEntity.ok(new HttpResponse(true, "Clientes obtenidos correctamente", clientes));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
     }
 
     @RequiresPermission("CREACION_CLIENTES")

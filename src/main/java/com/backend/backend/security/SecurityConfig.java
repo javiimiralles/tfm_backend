@@ -27,6 +27,8 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Value("${service.security.secure-key-password}")
     private String secureKeyPassword;
 
+    private static final String ADMIN = "ADMIN";
+
     private final PermissionInterceptor permissionInterceptor;
 
     public SecurityConfig(PermissionInterceptor permissionInterceptor) {
@@ -44,7 +46,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         UserDetails admin = User.builder()
                 .username(secureKeyUsername)
                 .password(passwordEncoder.encode(secureKeyPassword))
-                .roles("ADMIN")
+                .roles(ADMIN)
                 .build();
 
         return new InMemoryUserDetailsManager(admin);
@@ -56,8 +58,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").hasRole("ADMIN")
-                        .requestMatchers("/api/clientes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/**").hasRole(ADMIN)
+                        .requestMatchers("/api/clientes/**").hasRole(ADMIN)
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

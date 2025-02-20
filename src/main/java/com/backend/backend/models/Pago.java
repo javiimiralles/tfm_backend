@@ -4,6 +4,7 @@ import com.backend.backend.enums.MetodoPagoEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -25,7 +26,7 @@ public class Pago {
     private Date fechaPago;
 
     @Column(name = "importe", nullable = false)
-    private Double importe;
+    private BigDecimal importe;
 
     @Column(name = "metodo_pago", nullable = false)
     private MetodoPagoEnum metodoPago;

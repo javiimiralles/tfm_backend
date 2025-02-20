@@ -6,6 +6,7 @@ import com.backend.backend.enums.TipoPedidoEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -39,7 +40,7 @@ public class Pedido {
     private MetodoPagoEnum metodoPago;
 
     @Column(name = "coste_total", nullable = false)
-    private Double costeTotal;
+    private BigDecimal costeTotal;
 
     @Column(name = "observaciones", length = 1000)
     private String observaciones;

@@ -3,6 +3,7 @@ package com.backend.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -14,8 +15,9 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_categoria", nullable = false)
-    private Long idCategoria;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_categoria", referencedColumnName = "id", nullable = false)
+    private CategoriaProducto categoria;
 
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;
@@ -26,20 +28,20 @@ public class Producto {
     @Column(name = "descripcion", length = 1000)
     private String descripcion;
 
-    @Column(name = "imagen")
-    private String imagen;
+    @Column(name = "imagen_url")
+    private String imagenUrl;
 
     @Column(name = "precio_venta", nullable = false)
-    private Double precioVenta;
+    private BigDecimal precioVenta;
 
     @Column(name = "impuesto_venta", nullable = false)
-    private Double impuestoVenta;
+    private BigDecimal impuestoVenta;
 
     @Column(name = "coste", nullable = false)
-    private Double coste;
+    private BigDecimal coste;
 
     @Column(name = "impuesto_compra", nullable = false)
-    private Double impuestoCompra;
+    private BigDecimal impuestoCompra;
 
     @Column(name = "stock", nullable = false)
     private Integer stock;

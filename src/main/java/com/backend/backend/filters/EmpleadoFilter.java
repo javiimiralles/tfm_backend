@@ -34,8 +34,8 @@ public class EmpleadoFilter {
     private String sortDirection;
 
     public Pageable getPageable() {
-        Integer page = this.page == null ? 0 : this.page;
-        Integer size = this.size == null ? 10 : this.size;
+        int page = this.page == null ? 0 : this.page;
+        int size = this.size == null ? 10 : this.size;
         String sortBy = this.sortBy == null ? "nombre" : this.sortBy;
         String sortDirection = this.sortDirection == null ? "ASC" : this.sortDirection;
         return PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));

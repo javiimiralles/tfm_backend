@@ -3,6 +3,8 @@ package com.backend.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @Entity
 @Table(name = "detalle_pedidos")
@@ -22,8 +24,8 @@ public class DetallePedido {
     private Integer cantidad;
 
     @Column(name = "precio_unitario", nullable = false)
-    private Double precioUnitario;
+    private BigDecimal precioUnitario;
 
     @Column(name = "subtotal", nullable = false)
-    private Double subtotal;
+    private BigDecimal subtotal;
 }

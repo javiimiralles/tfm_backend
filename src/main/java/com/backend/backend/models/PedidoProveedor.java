@@ -4,6 +4,7 @@ import com.backend.backend.enums.EstadoPedidoProveedorEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -28,5 +29,5 @@ public class PedidoProveedor {
     private EstadoPedidoProveedorEnum estado;
 
     @Column(name = "coste_total", nullable = false)
-    private Double costeTotal;
+    private BigDecimal costeTotal;
 }

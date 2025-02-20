@@ -15,7 +15,7 @@ public interface ClienteService {
 
     List<Cliente> findClientesByEmpresa(Long idEmpresa);
 
-    Page<ClienteDTO> findClientesDTOByFilter(ClienteFilter filter);
+    Page<ClienteDTO> findClientesDTOByFilter(ClienteFilter filter) throws BusinessException;
 
     @Transactional
     void createCliente(Cliente cliente, Long idResponsable) throws BusinessException;

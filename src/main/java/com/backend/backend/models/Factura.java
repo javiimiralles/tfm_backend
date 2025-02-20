@@ -3,6 +3,7 @@ package com.backend.backend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -24,7 +25,7 @@ public class Factura {
     private Date fechaFactura;
 
     @Column(name = "importe", nullable = false)
-    private Double importe;
+    private BigDecimal importe;
 
     @Column(name = "numero_factura", length = 50, nullable = false)
     private String numeroFactura;

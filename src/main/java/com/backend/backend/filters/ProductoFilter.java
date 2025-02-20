@@ -5,22 +5,29 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class ClienteFilter {
+public class ProductoFilter {
 
     private Long id;
+
+    private Long idCategoria;
 
     private Long idEmpresa;
 
     private String nombre;
 
-    private String apellidos;
+    private String descripcion;
 
-    private String email;
+    private BigDecimal precioVenta;
 
-    private Date fechaAlta;
+    private BigDecimal coste;
+
+    private Integer stock;
+
+    private Date fechaBaja;
 
     private String query;
 

@@ -38,7 +38,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     }
 
     @Override
-    public Page<EmpleadoDTO> findEmpleadosDTOByFilter(EmpleadoFilter filter) {
+    public Page<EmpleadoDTO> findEmpleadosDTOByFilter(EmpleadoFilter filter) throws BusinessException {
         logger.log(Level.INFO, "Obteniendo empleados por filtro: {}", filter);
         if (filter.getIdEmpresa() == null) {
             logger.log(Level.WARNING, "El idEmpresa es obligatorio");

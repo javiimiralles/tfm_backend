@@ -52,7 +52,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Page<ClienteDTO> findClientesDTOByFilter(ClienteFilter filter) {
+    public Page<ClienteDTO> findClientesDTOByFilter(ClienteFilter filter) throws BusinessException {
         logger.log(Level.INFO, "Obteniendo clientes con filtro: {}", filter);
         if (filter.getIdEmpresa() == null) {
             logger.log(Level.WARNING, "El idEmpresa es obligatorio");
