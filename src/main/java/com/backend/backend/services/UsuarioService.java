@@ -12,4 +12,6 @@ public interface UsuarioService {
 
     @Transactional
     void createUser(Usuario usuario);
+
+    boolean validateUsuarioResponsable(Long idResponsable, Long idEmpresa);
 }

@@ -7,6 +7,7 @@ import com.backend.backend.filters.ProductoFilter;
 import com.backend.backend.models.Producto;
 import com.backend.backend.services.ProductoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,16 @@ public class ProductoController {
     public ProductoController(ProductoService productoService, ObjectMapper objectMapper) {
         this.productoService = productoService;
         this.objectMapper = objectMapper;
+    }
+
+    @RequiresPermission("ACCESO_PRODUCTOS")
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getProductoById(@PathVariable Long id) {
+        Producto producto = productoService.getProductoById(id);
+        if (producto == null) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, "Producto no encontrado"));
+        }
+        return ResponseEntity.ok(new HttpResponse(true, "Producto obtenido correctamente", producto));
     }
 
     @RequiresPermission("ACCESO_PRODUCTOS")
@@ -45,6 +56,22 @@ public class ProductoController {
             Producto producto = objectMapper.readValue(productoJson, Producto.class);
             productoService.createProducto(producto, imagen, idResponsable);
             return ResponseEntity.ok(new HttpResponse(true, "Producto creado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
+
+    @RequiresPermission("EDICION_PRODUCTOS")
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Object> updateProducto(@PathVariable Long id,
+                                                 @RequestPart("producto") String productoJson,
+                                                 @RequestPart(value = "imagen", required = false) MultipartFile imagen,
+                                                 @RequestHeader("idResponsable") Long idResponsable,
+                                                 @PathParam("imageChanged") Boolean imageChanged) {
+        try {
+            Producto producto = objectMapper.readValue(productoJson, Producto.class);
+            productoService.updateProducto(id, producto, imagen, idResponsable, imageChanged);
+            return ResponseEntity.ok(new HttpResponse(true, "Producto actualizado correctamente"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
         }

@@ -11,8 +11,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface ProductoService {
+    Producto getProductoById(Long id);
+
     Page<ProductoDTO> findProductosDTOByFilter(ProductoFilter filter) throws BusinessException;
 
     @Transactional
     void createProducto(Producto producto, MultipartFile imagen, Long idResponsable) throws IOException;
+
+    @Transactional
+    void updateProducto(Long id, Producto producto, MultipartFile imagen, Long idResponsable, boolean imageChanged) throws IOException;
 }

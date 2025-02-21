@@ -26,6 +26,8 @@ public class ProductoServiceImpl implements ProductoService {
 
     private final CloudinaryService cloudinaryService;
 
+    private final UsuarioService usuarioService;
+
     private final MapperUtil mapperUtil;
 
     private static final String FOLDER_PATH_CLOUDINARY = "core/products";
@@ -33,15 +35,22 @@ public class ProductoServiceImpl implements ProductoService {
     Logger logger = Logger.getLogger(ProductoServiceImpl.class.getName());
 
     public ProductoServiceImpl(ProductoRepository productoRepository, CloudinaryService cloudinaryService,
-                               MapperUtil mapperUtil) {
+                               MapperUtil mapperUtil, UsuarioService usuarioService) {
         this.productoRepository = productoRepository;
         this.cloudinaryService = cloudinaryService;
         this.mapperUtil = mapperUtil;
+        this.usuarioService = usuarioService;
+    }
+
+    @Override
+    public Producto getProductoById(Long id) {
+        logger.log(Level.INFO, "Buscando producto con id: {0}", id);
+        return productoRepository.findById(id).orElse(null);
     }
 
     @Override
     public Page<ProductoDTO> findProductosDTOByFilter(ProductoFilter filter) throws BusinessException {
-        logger.info("Obteniendo productos con filtro: " + filter);
+        logger.log(Level.INFO, "Buscando productos con filtro: {0}", filter);
 
         if (filter.getIdEmpresa() == null) {
             logger.log(Level.WARNING, "El idEmpresa es obligatorio");
@@ -58,7 +67,11 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     @Override
     public void createProducto(Producto producto, MultipartFile imagen, Long idResponsable) throws IOException {
-        logger.info("Creando producto: " + producto);
+        logger.log(Level.INFO, "Creando producto: {0}", producto);
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, producto.getIdEmpresa())) {
+            throw new BusinessException("El usuario responsable no existe o no pertenece a la empresa");
+        }
 
         if (imagen != null && !imagen.isEmpty()) {
             String url = cloudinaryService.uploadImage(imagen, FOLDER_PATH_CLOUDINARY);
@@ -67,5 +80,40 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setIdRespAlta(idResponsable);
         producto.setFechaAlta(new Date());
         productoRepository.save(producto);
+    }
+
+    @Transactional
+    @Override
+    public void updateProducto(Long id, Producto producto, MultipartFile imagen, Long idResponsable, boolean imageChanged) throws IOException {
+        logger.log(Level.INFO, "Actualizando producto: {0}", producto);
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, producto.getIdEmpresa())) {
+            throw new BusinessException("El usuario responsable no existe o no pertenece a la empresa");
+        }
+
+        Producto productoToUpdate = productoRepository.findById(id).orElse(null);
+        if (productoToUpdate == null) {
+            throw new BusinessException("El producto no existe");
+        }
+
+        if (imageChanged) {
+            if (imagen != null && !imagen.isEmpty()) {
+                String url = cloudinaryService.uploadImage(imagen, FOLDER_PATH_CLOUDINARY);
+                productoToUpdate.setImagenUrl(url);
+            } else {
+                productoToUpdate.setImagenUrl(null);
+            }
+        }
+        productoToUpdate.setCategoria(producto.getCategoria());
+        productoToUpdate.setNombre(producto.getNombre());
+        productoToUpdate.setDescripcion(producto.getDescripcion());
+        productoToUpdate.setPrecioVenta(producto.getPrecioVenta());
+        productoToUpdate.setImpuestoVenta(producto.getImpuestoVenta());
+        productoToUpdate.setCoste(producto.getCoste());
+        productoToUpdate.setImpuestoCompra(producto.getImpuestoCompra());
+        productoToUpdate.setStock(producto.getStock());
+        productoToUpdate.setFechaModif(new Date());
+        productoToUpdate.setIdRespModif(idResponsable);
+        productoRepository.save(productoToUpdate);
     }
 }

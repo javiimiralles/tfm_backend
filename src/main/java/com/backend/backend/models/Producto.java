@@ -16,7 +16,7 @@ public class Producto {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_categoria", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id_categoria", referencedColumnName = "id")
     private CategoriaProducto categoria;
 
     @Column(name = "id_empresa", nullable = false)

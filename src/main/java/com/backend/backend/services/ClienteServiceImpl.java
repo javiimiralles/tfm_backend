@@ -70,14 +70,8 @@ public class ClienteServiceImpl implements ClienteService {
     public void createCliente(Cliente cliente, Long idResponsable) throws BusinessException {
         logger.log(Level.INFO, "Creando cliente: {}", cliente);
 
-        if (userNotExists(idResponsable)) {
-            logger.log(Level.WARNING, "El usuario con id {} no existe", idResponsable);
-            throw new BusinessException("El usuario no existe");
-        }
-
-        if (validateEmployee(cliente.getIdEmpresa(), idResponsable)) {
-            logger.log(Level.WARNING, "El empleado con idUsuario {} no pertenece a la empresa {}", new Object[]{idResponsable, cliente.getIdEmpresa()});
-            throw new BusinessException("El empleado responsable de creación no pertenece a la empresa");
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, cliente.getIdEmpresa())) {
+            throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
         }
 
         cliente.setFechaAlta(new Date());
@@ -90,14 +84,8 @@ public class ClienteServiceImpl implements ClienteService {
     public void updateCliente(Long id, Cliente cliente, Long idResponsable) throws BusinessException {
         logger.log(Level.INFO, "Actualizando cliente con id: {}", id);
 
-        if (userNotExists(idResponsable)) {
-            logger.log(Level.WARNING, "El usuario con id {} no existe", idResponsable);
-            throw new BusinessException("El usuario no existe");
-        }
-
-        if (validateEmployee(cliente.getIdEmpresa(), idResponsable)) {
-            logger.log(Level.WARNING, "El empleado con idUsuario {} no pertenece a la empresa {}", new Object[]{idResponsable, cliente.getIdEmpresa()});
-            throw new BusinessException("El empleado responsable de actualización no pertenece a la empresa");
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, cliente.getIdEmpresa())) {
+            throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
         }
 
         Cliente clienteToUpdate = clienteRepository.findById(id).orElse(null);
@@ -109,13 +97,5 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setFechaModif(new Date());
         cliente.setIdRespModif(idResponsable);
         clienteRepository.save(cliente);
-    }
-
-    private boolean userNotExists(Long id) {
-        return usuarioService.getUsuarioDTOById(id) == null;
-    }
-
-    private boolean validateEmployee(Long idEmpresa, Long idUsuario) {
-        return empleadoService.getEmpleadoByIdUsuarioAndIdEmpresa(idUsuario, idEmpresa) == null;
     }
 }

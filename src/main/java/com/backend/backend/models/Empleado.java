@@ -41,7 +41,7 @@ public class Empleado {
     private String direccion;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_pais", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id_pais", referencedColumnName = "id")
     private Pais pais;
 
     @Column(name = "provincia", length = 100)
