@@ -4,7 +4,7 @@ import com.backend.backend.dto.HttpResponse;
 import com.backend.backend.dto.LoginUsuarioForm;
 import com.backend.backend.dto.RegistroUsuarioForm;
 import com.backend.backend.dto.UsuarioDTO;
-import com.backend.backend.services.AuthService;
+import com.backend.backend.services.auth.AuthService;
 import com.backend.backend.utils.JWTUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

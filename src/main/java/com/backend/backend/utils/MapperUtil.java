@@ -4,10 +4,10 @@ import com.backend.backend.dto.ClienteDTO;
 import com.backend.backend.dto.EmpleadoDTO;
 import com.backend.backend.dto.ProductoDTO;
 import com.backend.backend.dto.UsuarioDTO;
-import com.backend.backend.models.Cliente;
-import com.backend.backend.models.Empleado;
-import com.backend.backend.models.Producto;
-import com.backend.backend.models.Usuario;
+import com.backend.backend.models.clientes.Cliente;
+import com.backend.backend.models.empleados.Empleado;
+import com.backend.backend.models.inventario.Producto;
+import com.backend.backend.models.usuarios.Usuario;
 import org.springframework.stereotype.Component;
 
 @Component

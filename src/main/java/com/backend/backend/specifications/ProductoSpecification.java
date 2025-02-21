@@ -1,7 +1,7 @@
 package com.backend.backend.specifications;
 
 import com.backend.backend.filters.ProductoFilter;
-import com.backend.backend.models.Producto;
+import com.backend.backend.models.inventario.Producto;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

@@ -2,7 +2,7 @@ package com.backend.backend.security;
 
 import com.backend.backend.annotations.RequiresPermission;
 import com.backend.backend.dto.UsuarioDTO;
-import com.backend.backend.services.UsuarioService;
+import com.backend.backend.services.usuarios.UsuarioService;
 import com.backend.backend.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;

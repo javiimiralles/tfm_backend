@@ -1,7 +1,7 @@
 package com.backend.backend.specifications;
 
 import com.backend.backend.filters.ClienteFilter;
-import com.backend.backend.models.Cliente;
+import com.backend.backend.models.clientes.Cliente;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

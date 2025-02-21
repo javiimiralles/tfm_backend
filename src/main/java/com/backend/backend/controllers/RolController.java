@@ -2,8 +2,8 @@ package com.backend.backend.controllers;
 
 import com.backend.backend.annotations.RequiresPermission;
 import com.backend.backend.dto.HttpResponse;
-import com.backend.backend.models.Rol;
-import com.backend.backend.services.RolService;
+import com.backend.backend.models.roles.Rol;
+import com.backend.backend.services.roles.RolService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

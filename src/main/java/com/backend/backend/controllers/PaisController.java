@@ -1,8 +1,8 @@
 package com.backend.backend.controllers;
 
 import com.backend.backend.dto.HttpResponse;
-import com.backend.backend.models.Pais;
-import com.backend.backend.services.PaisService;
+import com.backend.backend.models.paises.Pais;
+import com.backend.backend.services.paises.PaisService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

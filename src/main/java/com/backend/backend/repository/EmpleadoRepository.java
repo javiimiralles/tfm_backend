@@ -1,6 +1,6 @@
 package com.backend.backend.repository;
 
-import com.backend.backend.models.Empleado;
+import com.backend.backend.models.empleados.Empleado;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

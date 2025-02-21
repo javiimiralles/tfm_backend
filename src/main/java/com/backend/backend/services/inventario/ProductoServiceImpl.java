@@ -1,0 +1,121 @@
+package com.backend.backend.services.inventario;
+
+import com.backend.backend.dto.ProductoDTO;
+import com.backend.backend.exceptions.BusinessException;
+import com.backend.backend.filters.ProductoFilter;
+import com.backend.backend.models.inventario.Producto;
+import com.backend.backend.repository.ProductoRepository;
+import com.backend.backend.services.cloudinary.CloudinaryService;
+import com.backend.backend.services.usuarios.UsuarioService;
+import com.backend.backend.specifications.ProductoSpecification;
+import com.backend.backend.utils.MapperUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+@Service
+public class ProductoServiceImpl implements ProductoService {
+
+    private final ProductoRepository productoRepository;
+
+    private final CloudinaryService cloudinaryService;
+
+    private final UsuarioService usuarioService;
+
+    private final MapperUtil mapperUtil;
+
+    private static final String FOLDER_PATH_CLOUDINARY = "core/products";
+
+    Logger logger = Logger.getLogger(ProductoServiceImpl.class.getName());
+
+    public ProductoServiceImpl(ProductoRepository productoRepository, CloudinaryService cloudinaryService,
+                               MapperUtil mapperUtil, UsuarioService usuarioService) {
+        this.productoRepository = productoRepository;
+        this.cloudinaryService = cloudinaryService;
+        this.mapperUtil = mapperUtil;
+        this.usuarioService = usuarioService;
+    }
+
+    @Override
+    public Producto getProductoById(Long id) {
+        logger.log(Level.INFO, "Buscando producto con id: {0}", id);
+        return productoRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<ProductoDTO> findProductosDTOByFilter(ProductoFilter filter) throws BusinessException {
+        logger.log(Level.INFO, "Buscando productos con filtro: {0}", filter);
+
+        if (filter.getIdEmpresa() == null) {
+            logger.log(Level.WARNING, "El idEmpresa es obligatorio");
+            throw new BusinessException("El idEmpresa es obligatorio");
+        }
+
+        Specification<Producto> spec = ProductoSpecification.withFilters(filter);
+        Pageable pageable = filter.getPageable();
+
+        Page<Producto> productos = productoRepository.findAll(spec, pageable);
+        return productos.map(mapperUtil::mapProductoToProductoDTO);
+    }
+
+    @Transactional
+    @Override
+    public void createProducto(Producto producto, MultipartFile imagen, Long idResponsable) throws IOException {
+        logger.log(Level.INFO, "Creando producto: {0}", producto);
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, producto.getIdEmpresa())) {
+            throw new BusinessException("El usuario responsable no existe o no pertenece a la empresa");
+        }
+
+        if (imagen != null && !imagen.isEmpty()) {
+            String url = cloudinaryService.uploadImage(imagen, FOLDER_PATH_CLOUDINARY);
+            producto.setImagenUrl(url);
+        }
+        producto.setIdRespAlta(idResponsable);
+        producto.setFechaAlta(new Date());
+        productoRepository.save(producto);
+    }
+
+    @Transactional
+    @Override
+    public void updateProducto(Long id, Producto producto, MultipartFile imagen, Long idResponsable, boolean imageChanged) throws IOException {
+        logger.log(Level.INFO, "Actualizando producto: {0}", producto);
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, producto.getIdEmpresa())) {
+            throw new BusinessException("El usuario responsable no existe o no pertenece a la empresa");
+        }
+
+        Producto productoToUpdate = productoRepository.findById(id).orElse(null);
+        if (productoToUpdate == null) {
+            throw new BusinessException("El producto no existe");
+        }
+
+        if (imageChanged) {
+            if (imagen != null && !imagen.isEmpty()) {
+                String url = cloudinaryService.uploadImage(imagen, FOLDER_PATH_CLOUDINARY);
+                productoToUpdate.setImagenUrl(url);
+            } else {
+                productoToUpdate.setImagenUrl(null);
+            }
+        }
+        productoToUpdate.setCategoria(producto.getCategoria());
+        productoToUpdate.setNombre(producto.getNombre());
+        productoToUpdate.setDescripcion(producto.getDescripcion());
+        productoToUpdate.setPrecioVenta(producto.getPrecioVenta());
+        productoToUpdate.setImpuestoVenta(producto.getImpuestoVenta());
+        productoToUpdate.setCoste(producto.getCoste());
+        productoToUpdate.setImpuestoCompra(producto.getImpuestoCompra());
+        productoToUpdate.setStock(producto.getStock());
+        productoToUpdate.setFechaModif(new Date());
+        productoToUpdate.setIdRespModif(idResponsable);
+        productoRepository.save(productoToUpdate);
+    }
+}

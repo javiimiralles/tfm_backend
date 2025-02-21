@@ -1,7 +1,7 @@
 package com.backend.backend.specifications;
 
 import com.backend.backend.filters.EmpleadoFilter;
-import com.backend.backend.models.Empleado;
+import com.backend.backend.models.empleados.Empleado;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
