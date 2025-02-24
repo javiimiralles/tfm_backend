@@ -16,4 +16,7 @@ public interface CategoriaProductoService {
 
     @Transactional
     void updateCategoriaProducto(Long id, CategoriaProducto categoriaProducto, Long idResponsable) throws BusinessException;
+
+    @Transactional
+    void deleteCategoriaProducto(Long id, Long idResponsable) throws BusinessException;
 }

@@ -71,4 +71,15 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
         }
     }
+
+    @RequiresPermission("ELIMINACION_CLIENTES")
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteCliente(@PathVariable Long id, @RequestHeader("idResponsable") Long idResponsable) {
+        try {
+            clienteService.deleteCliente(id, idResponsable);
+            return ResponseEntity.ok(new HttpResponse(true, "Cliente eliminado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
 }

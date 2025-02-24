@@ -52,6 +52,8 @@ public class EmpleadoSpecification {
                 predicates.add(searchPredicate);
             }
 
+            predicates.add(cb.isNull(root.get("fechaBaja")));
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }

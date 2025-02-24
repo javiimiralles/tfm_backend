@@ -61,4 +61,15 @@ public class CategoriaProductoController {
             return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
         }
     }
+
+    @RequiresPermission("ELIMINACION_CATEGORIAS_PRODUCTOS")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteCategoriaProducto(@PathVariable Long id, @RequestHeader("idResponsable") Long idResponsable) {
+        try {
+            categoriaProductoService.deleteCategoriaProducto(id, idResponsable);
+            return ResponseEntity.ok(new HttpResponse(true, "Categoría eliminada correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
 }

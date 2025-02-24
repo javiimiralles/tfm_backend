@@ -22,4 +22,7 @@ public interface ClienteService {
 
     @Transactional
     void updateCliente(Long id, Cliente cliente, Long idResponsable) throws BusinessException;
+
+    @Transactional
+    void deleteCliente(Long id, Long idResponsable) throws BusinessException;
 }

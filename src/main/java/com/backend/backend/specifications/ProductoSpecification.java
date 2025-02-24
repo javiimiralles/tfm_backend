@@ -21,7 +21,7 @@ public class ProductoSpecification {
                 predicates.add(cb.equal(root.get("id"), filter.getId()));
             }
             if (filter.getIdCategoria() != null) {
-                predicates.add(cb.equal(root.get("idCategoria"), filter.getIdCategoria()));
+                predicates.add(cb.equal(root.get("categoria").get("id"), filter.getIdCategoria()));
             }
             if (filter.getIdEmpresa() != null) {
                 predicates.add(cb.equal(root.get("idEmpresa"), filter.getIdEmpresa()));
@@ -41,9 +41,6 @@ public class ProductoSpecification {
             if (filter.getStock() != null) {
                 predicates.add(cb.equal(root.get("stock"), filter.getStock()));
             }
-            if (filter.getFechaBaja() != null) {
-                predicates.add(cb.equal(root.get("fechaBaja"), filter.getFechaBaja()));
-            }
 
             if (filter.getQuery() != null && !filter.getQuery().trim().isEmpty()) {
                 predicates.add(cb.or(
@@ -51,6 +48,8 @@ public class ProductoSpecification {
                     cb.like(cb.lower(root.get("descripcion")), "%" + filter.getQuery().toLowerCase() + "%")
                 ));
             }
+
+            predicates.add(cb.isNull(root.get("fechaBaja")));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

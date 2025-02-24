@@ -100,4 +100,24 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setIdRespModif(idResponsable);
         clienteRepository.save(cliente);
     }
+
+    @Transactional
+    @Override
+    public void deleteCliente(Long id, Long idResponsable) throws BusinessException {
+        logger.log(Level.INFO, "Eliminando cliente con id: {}", id);
+
+        Cliente clienteToDelete = clienteRepository.findById(id).orElse(null);
+        if (clienteToDelete == null) {
+            logger.log(Level.WARNING, "El cliente con id {} no existe", id);
+            throw new BusinessException("El cliente no existe");
+        }
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, clienteToDelete.getIdEmpresa())) {
+            throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
+        }
+
+        clienteToDelete.setFechaBaja(new Date());
+        clienteToDelete.setIdRespBaja(idResponsable);
+        clienteRepository.save(clienteToDelete);
+    }
 }

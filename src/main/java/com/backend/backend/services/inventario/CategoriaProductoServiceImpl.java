@@ -2,6 +2,7 @@ package com.backend.backend.services.inventario;
 
 import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.filters.CategoriaProductoFilter;
+import com.backend.backend.filters.ProductoFilter;
 import com.backend.backend.models.inventario.CategoriaProducto;
 import com.backend.backend.repository.CategoriaProductoRepository;
 import com.backend.backend.services.usuarios.UsuarioService;
@@ -22,11 +23,15 @@ public class CategoriaProductoServiceImpl implements CategoriaProductoService {
 
     private final UsuarioService usuarioService;
 
+    private final ProductoService productoService;
+
     Logger logger = Logger.getLogger(CategoriaProductoServiceImpl.class.getName());
 
-    public CategoriaProductoServiceImpl(CategoriaProductoRepository categoriaProductoRepository, UsuarioService usuarioService) {
+    public CategoriaProductoServiceImpl(CategoriaProductoRepository categoriaProductoRepository, UsuarioService usuarioService,
+                                        ProductoService productoService) {
         this.categoriaProductoRepository = categoriaProductoRepository;
         this.usuarioService = usuarioService;
+        this.productoService = productoService;
     }
 
     @Override
@@ -76,6 +81,31 @@ public class CategoriaProductoServiceImpl implements CategoriaProductoService {
         }
 
         categoriaProductoRepository.save(categoriaProducto);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCategoriaProducto(Long id, Long idResponsable) throws BusinessException {
+        logger.log(Level.INFO, "Eliminando categoría de producto con id: {}", id);
+
+        CategoriaProducto categoriaProductoToDelete = categoriaProductoRepository.findById(id).orElse(null);
+        if (categoriaProductoToDelete == null) {
+            logger.log(Level.WARNING, "La categoría con id {} no existe", id);
+            throw new BusinessException("La categoría de producto no existe");
+        }
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, categoriaProductoToDelete.getIdEmpresa())) {
+            throw new BusinessException("El empleado responsable de eliminación no existe o no pertenece a la empresa");
+        }
+
+        ProductoFilter productoFilter = new ProductoFilter();
+        productoFilter.setIdEmpresa(categoriaProductoToDelete.getIdEmpresa());
+        productoFilter.setIdCategoria(id);
+        if (productoService.findProductosDTOByFilter(productoFilter).hasContent()) {
+            throw new BusinessException("No se puede eliminar la categoría porque tiene productos asociados");
+        }
+
+        categoriaProductoRepository.delete(categoriaProductoToDelete);
     }
 
 

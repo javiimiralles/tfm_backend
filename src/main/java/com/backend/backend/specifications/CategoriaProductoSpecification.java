@@ -18,7 +18,7 @@ public class CategoriaProductoSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter.getIdEmpresa() != null) {
-                predicates.add(cb.equal(root.get("id"), filter.getIdEmpresa()));
+                predicates.add(cb.equal(root.get("idEmpresa"), filter.getIdEmpresa()));
             }
 
             if (filter.getQuery() != null && !filter.getQuery().isEmpty()) {
