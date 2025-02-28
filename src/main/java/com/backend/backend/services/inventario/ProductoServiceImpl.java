@@ -1,6 +1,7 @@
 package com.backend.backend.services.inventario;
 
 import com.backend.backend.dto.ProductoDTO;
+import com.backend.backend.enums.RutasCloudinaryEnum;
 import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.filters.ProductoFilter;
 import com.backend.backend.models.inventario.Producto;
@@ -31,8 +32,6 @@ public class ProductoServiceImpl implements ProductoService {
     private final UsuarioService usuarioService;
 
     private final MapperUtil mapperUtil;
-
-    private static final String FOLDER_PATH_CLOUDINARY = "core/products";
 
     Logger logger = Logger.getLogger(ProductoServiceImpl.class.getName());
 
@@ -76,7 +75,7 @@ public class ProductoServiceImpl implements ProductoService {
         }
 
         if (imagen != null && !imagen.isEmpty()) {
-            String url = cloudinaryService.uploadImage(imagen, FOLDER_PATH_CLOUDINARY);
+            String url = cloudinaryService.uploadImage(imagen, RutasCloudinaryEnum.PATH_IMAGEN_PRODUCTOS.getRuta());
             producto.setImagenUrl(url);
         }
         producto.setIdRespAlta(idResponsable);
@@ -100,7 +99,7 @@ public class ProductoServiceImpl implements ProductoService {
 
         if (imageChanged) {
             if (imagen != null && !imagen.isEmpty()) {
-                String url = cloudinaryService.uploadImage(imagen, FOLDER_PATH_CLOUDINARY);
+                String url = cloudinaryService.uploadImage(imagen, RutasCloudinaryEnum.PATH_IMAGEN_PRODUCTOS.getRuta());
                 productoToUpdate.setImagenUrl(url);
             } else {
                 productoToUpdate.setImagenUrl(null);

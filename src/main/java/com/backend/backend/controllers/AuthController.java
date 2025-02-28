@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,9 +25,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody RegistroUsuarioForm registroUsuarioForm) {
-        authService.register(registroUsuarioForm);
-        return ResponseEntity.ok(new HttpResponse(true, "Empleado registrado correctamente"));
+    public ResponseEntity<Object> register(@Valid @RequestBody RegistroUsuarioForm registroUsuarioForm, @RequestPart(value = "imagen", required = false) MultipartFile imagen) {
+        try {
+            authService.register(registroUsuarioForm, imagen);
+            return ResponseEntity.ok(new HttpResponse(true, "Empleado registrado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HttpResponse(false, e.getMessage()));
+        }
     }
 
     @PostMapping("/login")

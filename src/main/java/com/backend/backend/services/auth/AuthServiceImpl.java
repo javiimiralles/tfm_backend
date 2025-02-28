@@ -22,6 +22,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -68,54 +69,57 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void register(RegistroUsuarioForm registroUsuarioForm) {
+    public void register(RegistroUsuarioForm registroUsuarioForm, MultipartFile imagen) throws BusinessException {
         logger.log(Level.INFO, "Registrando empleado: {}", registroUsuarioForm.getEmailUsuario());
 
-        // Crear y guardar la empresa a la que pertenece el usuario
-        Empresa empresa = new Empresa();
-        empresa.setNombre(registroUsuarioForm.getNombreEmpresa());
-        empresa.setRazonSocial(registroUsuarioForm.getRazonSocialEmpresa());
-        empresa.setDireccion(registroUsuarioForm.getDireccionEmpresa());
-        empresa.setTelefono(registroUsuarioForm.getTelefonoEmpresa());
-        empresa.setEmail(registroUsuarioForm.getEmailEmpresa());
-        empresaService.createEmpresa(empresa);
+        try {
 
-        // Crear y guardar el rol de ADMIN
-        Rol rol = new Rol();
-        rol.setNombre("ADMIN");
-        rol.setDescripcion("Administrador con todos los permisos");
-        rol.setIdEmpresa(empresa.getId());
-        rolService.createRol(rol);
+            // Crear y guardar la empresa a la que pertenece el usuario
+            Empresa empresa = new Empresa();
+            empresa.setNombre(registroUsuarioForm.getNombreEmpresa());
+            empresa.setRazonSocial(registroUsuarioForm.getRazonSocialEmpresa());
+            empresa.setDireccion(registroUsuarioForm.getDireccionEmpresa());
+            empresa.setTelefono(registroUsuarioForm.getTelefonoEmpresa());
+            empresa.setEmail(registroUsuarioForm.getEmailEmpresa());
+            empresaService.createEmpresa(empresa);
 
-        // Crear y guardar los permisos por defecto
-        List<Accion> acciones = accionService.getAcciones();
-        for (Accion accion : acciones) {
-            Permiso permiso = new Permiso();
-            permiso.setRol(rol);
-            permiso.setAccion(accion);
-            permisoService.createPermiso(permiso);
+            // Crear y guardar el rol de ADMIN
+            Rol rol = new Rol();
+            rol.setNombre("ADMIN");
+            rol.setDescripcion("Administrador con todos los permisos");
+            rol.setIdEmpresa(empresa.getId());
+            rolService.createRol(rol);
+
+            // Crear y guardar los permisos por defecto
+            List<Accion> acciones = accionService.getAcciones();
+            for (Accion accion : acciones) {
+                Permiso permiso = new Permiso();
+                permiso.setRol(rol);
+                permiso.setAccion(accion);
+                permisoService.createPermiso(permiso);
+            }
+
+            // Crear el usuario
+            Usuario usuario = new Usuario();
+            usuario.setEmail(registroUsuarioForm.getEmailUsuario());
+            usuario.setPassword(registroUsuarioForm.getPasswordUsuario());
+            usuario.setRol(rol);
+
+            // Crear y guardar el empleado asociado al usuario
+            Empleado empleado = new Empleado();
+            empleado.setIdEmpresa(empresa.getId());
+            empleado.setUsuario(usuario);
+            empleado.setNombre(registroUsuarioForm.getNombreEmpleado());
+            empleado.setApellidos(registroUsuarioForm.getApellidosEmpleado());
+            empleado.setTelefono(registroUsuarioForm.getTelefonoEmpleado());
+            empleado.setDireccion(registroUsuarioForm.getDireccionEmpleado());
+            empleado.setFechaNacimiento(registroUsuarioForm.getFechaNacimientoEmpleado());
+            empleado.setGenero(registroUsuarioForm.getGeneroEmpleado());
+            empleadoService.createEmpleado(empleado, usuario, imagen, null);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error al registrar empleado: {}", e.getMessage());
+            throw new BusinessException("Error al registrar empleado");
         }
-
-        // Crear y guardar el usuario
-        Usuario usuario = new Usuario();
-        usuario.setEmail(registroUsuarioForm.getEmailUsuario());
-        usuario.setPassword(passwordEncoder.encode(registroUsuarioForm.getPasswordUsuario()));
-        usuario.setRol(rol);
-        usuarioService.createUser(usuario);
-
-        // Crear y guardar el empleado asociado al usuario
-        Empleado empleado = new Empleado();
-        empleado.setIdEmpresa(empresa.getId());
-        empleado.setUsuario(usuario);
-        empleado.setNombre(registroUsuarioForm.getNombreEmpleado());
-        empleado.setApellidos(registroUsuarioForm.getApellidosEmpleado());
-        empleado.setTelefono(registroUsuarioForm.getTelefonoEmpleado());
-        empleado.setDireccion(registroUsuarioForm.getDireccionEmpleado());
-        empleado.setFechaNacimiento(registroUsuarioForm.getFechaNacimientoEmpleado());
-        empleado.setGenero(registroUsuarioForm.getGeneroEmpleado());
-        empleado.setIdRespAlta(usuario.getId());
-        empleado.setFechaAlta(new Date());
-        empleadoService.createEmpleado(empleado);
     }
 
     @Override

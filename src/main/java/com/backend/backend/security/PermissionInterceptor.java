@@ -7,6 +7,7 @@ import com.backend.backend.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,7 +20,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
     private final JWTUtil jwtUtil;
     private final UsuarioService usuarioService;
 
-    public PermissionInterceptor(JWTUtil jwtUtil, UsuarioService usuarioService) {
+    public PermissionInterceptor(JWTUtil jwtUtil, @Lazy UsuarioService usuarioService) {
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
     }
