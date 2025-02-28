@@ -73,7 +73,7 @@ public class ClienteController {
     }
 
     @RequiresPermission("ELIMINACION_CLIENTES")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCliente(@PathVariable Long id, @RequestHeader("idResponsable") Long idResponsable) {
         try {
             clienteService.deleteCliente(id, idResponsable);

@@ -1,12 +1,10 @@
 package com.backend.backend.utils;
 
-import com.backend.backend.dto.ClienteDTO;
-import com.backend.backend.dto.EmpleadoDTO;
-import com.backend.backend.dto.ProductoDTO;
-import com.backend.backend.dto.UsuarioDTO;
+import com.backend.backend.dto.*;
 import com.backend.backend.models.clientes.Cliente;
 import com.backend.backend.models.empleados.Empleado;
 import com.backend.backend.models.inventario.Producto;
+import com.backend.backend.models.proveedores.Proveedor;
 import com.backend.backend.models.usuarios.Usuario;
 import org.springframework.stereotype.Component;
 
@@ -55,5 +53,15 @@ public class MapperUtil {
         productoDTO.setStock(producto.getStock());
         productoDTO.setFechaBaja(producto.getFechaBaja());
         return productoDTO;
+    }
+
+    public ProveedorDTO mapProveedorToProveedorDTO(Proveedor proveedor) {
+        ProveedorDTO proveedorDTO = new ProveedorDTO();
+        proveedorDTO.setId(proveedor.getId());
+        proveedorDTO.setIdEmpresa(proveedor.getIdEmpresa());
+        proveedorDTO.setNombre(proveedor.getNombre());
+        proveedorDTO.setEmail(proveedor.getEmail());
+        proveedorDTO.setFechaAlta(proveedor.getFechaAlta());
+        return proveedorDTO;
     }
 }

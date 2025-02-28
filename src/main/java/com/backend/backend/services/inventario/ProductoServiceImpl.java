@@ -88,13 +88,13 @@ public class ProductoServiceImpl implements ProductoService {
     public void updateProducto(Long id, Producto producto, MultipartFile imagen, Long idResponsable, boolean imageChanged) throws IOException {
         logger.log(Level.INFO, "Actualizando producto: {0}", producto);
 
-        if (!usuarioService.validateUsuarioResponsable(idResponsable, producto.getIdEmpresa())) {
-            throw new BusinessException("El usuario responsable no existe o no pertenece a la empresa");
-        }
-
         Producto productoToUpdate = productoRepository.findById(id).orElse(null);
         if (productoToUpdate == null) {
             throw new BusinessException("El producto no existe");
+        }
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, producto.getIdEmpresa())) {
+            throw new BusinessException("El usuario responsable no existe o no pertenece a la empresa");
         }
 
         if (imageChanged) {
