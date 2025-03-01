@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,6 +66,15 @@ public class ProductoServiceImpl implements ProductoService {
         return productos.map(mapperUtil::mapProductoToProductoDTO);
     }
 
+    @Override
+    public BigDecimal getCosteProducto(Long id) {
+        Producto producto = productoRepository.findById(id).orElse(null);
+        if (producto == null) {
+            throw new BusinessException("El producto no existe");
+        }
+        return producto.getCoste();
+    }
+
     @Transactional
     @Override
     public void createProducto(Producto producto, MultipartFile imagen, Long idResponsable) throws IOException {
@@ -100,21 +110,14 @@ public class ProductoServiceImpl implements ProductoService {
         if (imageChanged) {
             if (imagen != null && !imagen.isEmpty()) {
                 String url = cloudinaryService.uploadImage(imagen, RutasCloudinaryEnum.PATH_IMAGEN_PRODUCTOS.getRuta());
-                productoToUpdate.setImagenUrl(url);
+                producto.setImagenUrl(url);
             } else {
-                productoToUpdate.setImagenUrl(null);
+                producto.setImagenUrl(null);
             }
         }
-        productoToUpdate.setCategoria(producto.getCategoria());
-        productoToUpdate.setNombre(producto.getNombre());
-        productoToUpdate.setDescripcion(producto.getDescripcion());
-        productoToUpdate.setPrecioVenta(producto.getPrecioVenta());
-        productoToUpdate.setImpuestoVenta(producto.getImpuestoVenta());
-        productoToUpdate.setCoste(producto.getCoste());
-        productoToUpdate.setImpuestoCompra(producto.getImpuestoCompra());
-        productoToUpdate.setStock(producto.getStock());
-        productoToUpdate.setFechaModif(new Date());
-        productoToUpdate.setIdRespModif(idResponsable);
-        productoRepository.save(productoToUpdate);
+
+        producto.setFechaModif(new Date());
+        producto.setIdRespModif(idResponsable);
+        productoRepository.save(producto);
     }
 }

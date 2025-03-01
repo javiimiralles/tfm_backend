@@ -9,11 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public interface ProductoService {
     Producto getProductoById(Long id);
 
     Page<ProductoDTO> findProductosDTOByFilter(ProductoFilter filter) throws BusinessException;
+
+    BigDecimal getCosteProducto(Long id);
 
     @Transactional
     void createProducto(Producto producto, MultipartFile imagen, Long idResponsable) throws IOException;
