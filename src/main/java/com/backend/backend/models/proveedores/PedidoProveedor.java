@@ -16,8 +16,9 @@ public class PedidoProveedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_proveedor", nullable = false)
-    private Long idProveedor;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_proveedor", referencedColumnName = "id", nullable = false)
+    private Proveedor proveedor;
 
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;

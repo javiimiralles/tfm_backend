@@ -1,5 +1,8 @@
 package com.backend.backend.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum EstadoPedidoProveedorEnum {
 
     PENDIENTE("Pendiente"),
@@ -13,7 +16,12 @@ public enum EstadoPedidoProveedorEnum {
         this.estadoPedidoProveedor = estadoPedidoProveedor;
     }
 
-    public String getEstadoPedidoProveedor(){
-        return estadoPedidoProveedor;
+    public static EstadoPedidoProveedorEnum getEstadoPedidoProveedorEnum(String estadoPedidoProveedor){
+        for(EstadoPedidoProveedorEnum estado : EstadoPedidoProveedorEnum.values()){
+            if(estado.getEstadoPedidoProveedor().equals(estadoPedidoProveedor)){
+                return estado;
+            }
+        }
+        return null;
     }
 }

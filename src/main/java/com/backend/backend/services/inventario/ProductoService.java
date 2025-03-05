@@ -23,4 +23,7 @@ public interface ProductoService {
 
     @Transactional
     void updateProducto(Long id, Producto producto, MultipartFile imagen, Long idResponsable, boolean imageChanged) throws IOException;
+
+    @Transactional
+    void updateStockProducto(Long id, int cantidad);
 }

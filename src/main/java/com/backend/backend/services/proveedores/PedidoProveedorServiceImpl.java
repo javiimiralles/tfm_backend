@@ -3,19 +3,25 @@ package com.backend.backend.services.proveedores;
 import com.backend.backend.dto.DatosPedidoProveedor;
 import com.backend.backend.enums.EstadoPedidoProveedorEnum;
 import com.backend.backend.exceptions.BusinessException;
+import com.backend.backend.filters.PedidoProveedorFilter;
 import com.backend.backend.models.proveedores.DetallePedidoProveedor;
 import com.backend.backend.models.proveedores.PedidoProveedor;
 import com.backend.backend.repository.DetallePedidoProveedorRepository;
 import com.backend.backend.repository.PedidoProveedorRepository;
 import com.backend.backend.services.inventario.ProductoService;
 import com.backend.backend.services.usuarios.UsuarioService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.backend.backend.specifications.PedidoProveedorSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class PedidoProveedorServiceImpl implements PedidoProveedorService {
@@ -28,14 +34,39 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
 
     private final ProductoService productoService;
 
-    Logger logger = LoggerFactory.getLogger(PedidoProveedorServiceImpl.class);
+    private final ProveedorService proveedorService;
+
+    Logger logger = Logger.getLogger(PedidoProveedorServiceImpl.class.getName());
 
     public PedidoProveedorServiceImpl(PedidoProveedorRepository pedidoProveedorRepository, UsuarioService usuarioService,
-                                      ProductoService productoService, DetallePedidoProveedorRepository detallePedidoProveedorRepository) {
+                                      ProductoService productoService, DetallePedidoProveedorRepository detallePedidoProveedorRepository,
+                                      ProveedorService proveedorService) {
         this.pedidoProveedorRepository = pedidoProveedorRepository;
         this.usuarioService = usuarioService;
         this.productoService = productoService;
         this.detallePedidoProveedorRepository = detallePedidoProveedorRepository;
+        this.proveedorService = proveedorService;
+    }
+
+    @Override
+    public PedidoProveedor getPedidoProveedorById(Long id) {
+        logger.log(Level.INFO, "Buscando pedido proveedor con id: {0}", id);
+        return pedidoProveedorRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<PedidoProveedor> findPedidosProveedorByFilter(PedidoProveedorFilter filter) throws BusinessException {
+        logger.log(Level.INFO, "Buscando pedidos proveedor con filtro: {0}", filter);
+
+        if (filter.getIdEmpresa() == null) {
+            logger.log(Level.WARNING, "El idEmpresa es obligatorio");
+            throw new BusinessException("El idEmpresa es obligatorio");
+        }
+
+        Specification<PedidoProveedor> spec = PedidoProveedorSpecification.withFilters(filter);
+        Pageable pageable = filter.getPageable();
+
+        return pedidoProveedorRepository.findAll(spec, pageable);
     }
 
     @Transactional
@@ -56,7 +87,7 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
         }
 
         PedidoProveedor pedido = new PedidoProveedor();
-        pedido.setIdProveedor(datosPedidoProveedor.getIdProveedor());
+        pedido.setProveedor(proveedorService.getProveedorById(datosPedidoProveedor.getIdProveedor()));
         pedido.setIdEmpresa(datosPedidoProveedor.getIdEmpresa());
         pedido.setFechaPedido(new Date());
         pedido.setEstado(EstadoPedidoProveedorEnum.PENDIENTE);
@@ -67,5 +98,24 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
             detalle.setIdPedidoProveedor(pedidoCreado.getId());
             detallePedidoProveedorRepository.save(detalle);
         }
+    }
+
+    @Transactional
+    @Override
+    public void updateEstadoPedidoProveedor(Long idPedido, EstadoPedidoProveedorEnum nuevoEstado) {
+        logger.log(Level.INFO, "Actualizando estado del pedido proveedor con id: {0}", idPedido);
+        PedidoProveedor pedido = pedidoProveedorRepository.findById(idPedido).orElse(null);
+        if (pedido == null) {
+            logger.log(Level.WARNING, "El pedido proveedor con id {0} no existe", idPedido);
+            throw new BusinessException("El pedido proveedor no existe");
+        }
+        if (nuevoEstado.equals(EstadoPedidoProveedorEnum.RECIBIDO)) {
+            List<DetallePedidoProveedor> detalles = detallePedidoProveedorRepository.findByIdPedidoProveedor(idPedido);
+            for (DetallePedidoProveedor detalle : detalles) {
+                productoService.updateStockProducto(detalle.getIdProducto(), detalle.getCantidad());
+            }
+        }
+        pedido.setEstado(nuevoEstado);
+        pedidoProveedorRepository.save(pedido);
     }
 }

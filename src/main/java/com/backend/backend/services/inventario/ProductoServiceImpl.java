@@ -120,4 +120,17 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setIdRespModif(idResponsable);
         productoRepository.save(producto);
     }
+
+    @Transactional
+    @Override
+    public void updateStockProducto(Long id, int cantidad) {
+        logger.log(Level.INFO, "Actualizando stock del producto con id: {0}", id);
+        Producto producto = productoRepository.findById(id).orElse(null);
+        if (producto == null) {
+            throw new BusinessException("El producto no existe");
+        }
+        int stockActualizado = producto.getStock() + cantidad;
+        producto.setStock(stockActualizado);
+        productoRepository.save(producto);
+    }
 }
