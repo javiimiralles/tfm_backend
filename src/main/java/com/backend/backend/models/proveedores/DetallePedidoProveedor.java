@@ -1,5 +1,6 @@
 package com.backend.backend.models.proveedores;
 
+import com.backend.backend.models.inventario.Producto;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,8 +18,9 @@ public class DetallePedidoProveedor {
     @Column(name = "id_pedido_proveedor", nullable = false)
     private Long idPedidoProveedor;
 
-    @Column(name = "id_producto", nullable = false)
-    private Long idProducto;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_producto", referencedColumnName = "id", nullable = false)
+    private Producto producto;
 
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;

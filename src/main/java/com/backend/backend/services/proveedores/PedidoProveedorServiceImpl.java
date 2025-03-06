@@ -6,7 +6,6 @@ import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.filters.PedidoProveedorFilter;
 import com.backend.backend.models.proveedores.DetallePedidoProveedor;
 import com.backend.backend.models.proveedores.PedidoProveedor;
-import com.backend.backend.repository.DetallePedidoProveedorRepository;
 import com.backend.backend.repository.PedidoProveedorRepository;
 import com.backend.backend.services.inventario.ProductoService;
 import com.backend.backend.services.usuarios.UsuarioService;
@@ -28,7 +27,7 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
 
     private final PedidoProveedorRepository pedidoProveedorRepository;
 
-    private final DetallePedidoProveedorRepository detallePedidoProveedorRepository;
+    private final DetallePedidoProveedorService detallePedidoProveedorService;
 
     private final UsuarioService usuarioService;
 
@@ -39,12 +38,12 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
     Logger logger = Logger.getLogger(PedidoProveedorServiceImpl.class.getName());
 
     public PedidoProveedorServiceImpl(PedidoProveedorRepository pedidoProveedorRepository, UsuarioService usuarioService,
-                                      ProductoService productoService, DetallePedidoProveedorRepository detallePedidoProveedorRepository,
+                                      ProductoService productoService, DetallePedidoProveedorService detallePedidoProveedorService,
                                       ProveedorService proveedorService) {
         this.pedidoProveedorRepository = pedidoProveedorRepository;
         this.usuarioService = usuarioService;
         this.productoService = productoService;
-        this.detallePedidoProveedorRepository = detallePedidoProveedorRepository;
+        this.detallePedidoProveedorService = detallePedidoProveedorService;
         this.proveedorService = proveedorService;
     }
 
@@ -80,7 +79,7 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
 
         BigDecimal costeTotal = BigDecimal.ZERO;
         for (DetallePedidoProveedor detalle : datosPedidoProveedor.getDetallesPedido()) {
-            BigDecimal costeUnitario = productoService.getCosteProducto(detalle.getIdProducto());
+            BigDecimal costeUnitario = productoService.getCosteProducto(detalle.getProducto().getId());
             detalle.setPrecioUnitario(costeUnitario);
             detalle.setSubtotal(costeUnitario.multiply(BigDecimal.valueOf(detalle.getCantidad())));
             costeTotal = costeTotal.add(detalle.getSubtotal());
@@ -96,7 +95,7 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
 
         for (DetallePedidoProveedor detalle : datosPedidoProveedor.getDetallesPedido()) {
             detalle.setIdPedidoProveedor(pedidoCreado.getId());
-            detallePedidoProveedorRepository.save(detalle);
+            detallePedidoProveedorService.createDetallePedidoProveedor(detalle);
         }
     }
 
@@ -110,9 +109,9 @@ public class PedidoProveedorServiceImpl implements PedidoProveedorService {
             throw new BusinessException("El pedido proveedor no existe");
         }
         if (nuevoEstado.equals(EstadoPedidoProveedorEnum.RECIBIDO)) {
-            List<DetallePedidoProveedor> detalles = detallePedidoProveedorRepository.findByIdPedidoProveedor(idPedido);
+            List<DetallePedidoProveedor> detalles = detallePedidoProveedorService.findDetallesPedidoProveedorByIdPedidoProveedor(idPedido);
             for (DetallePedidoProveedor detalle : detalles) {
-                productoService.updateStockProducto(detalle.getIdProducto(), detalle.getCantidad());
+                productoService.updateStockProducto(detalle.getProducto().getId(), detalle.getCantidad());
             }
         }
         pedido.setEstado(nuevoEstado);
