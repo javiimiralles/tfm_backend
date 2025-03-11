@@ -1,5 +1,8 @@
 package com.backend.backend.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum GeneroEnum {
 
     HOMBRE("Hombre"),
@@ -12,7 +15,4 @@ public enum GeneroEnum {
         this.genero = genero;
     }
 
-    public String getGenero(){
-        return genero;
-    }
 }

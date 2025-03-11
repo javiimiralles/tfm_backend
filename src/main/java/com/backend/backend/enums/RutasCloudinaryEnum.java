@@ -1,5 +1,8 @@
 package com.backend.backend.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RutasCloudinaryEnum {
 
     PATH_IMAGEN_PRODUCTOS("core/products"),
@@ -11,7 +14,4 @@ public enum RutasCloudinaryEnum {
         this.ruta = ruta;
     }
 
-    public String getRuta() {
-        return ruta;
-    }
 }

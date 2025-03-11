@@ -3,6 +3,7 @@ package com.backend.backend.models.ventas;
 import com.backend.backend.enums.EstadoPedidoEnum;
 import com.backend.backend.enums.MetodoPagoEnum;
 import com.backend.backend.enums.TipoPedidoEnum;
+import com.backend.backend.models.clientes.Cliente;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,8 +19,9 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_cliente", nullable = false)
-    private Long idCliente;
+    @ManyToOne
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id", nullable = false)
+    private Cliente cliente;
 
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;

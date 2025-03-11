@@ -1,5 +1,6 @@
 package com.backend.backend.models.ventas;
 
+import com.backend.backend.models.inventario.Producto;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,8 +18,9 @@ public class DetallePedido {
     @Column(name = "id_pedido", nullable = false)
     private Long idPedido;
 
-    @Column(name = "id_producto", nullable = false)
-    private Long idProducto;
+    @ManyToOne
+    @JoinColumn(name = "id_producto", referencedColumnName = "id", nullable = false)
+    private Producto producto;
 
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;

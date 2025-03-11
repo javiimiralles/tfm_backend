@@ -1,5 +1,8 @@
 package com.backend.backend.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum TipoPedidoEnum {
 
     PEDIDO("Pedido"),
@@ -11,7 +14,4 @@ public enum TipoPedidoEnum {
         this.tipoPedido = tipoPedido;
     }
 
-    public String getTipoPedido() {
-        return tipoPedido;
-    }
 }

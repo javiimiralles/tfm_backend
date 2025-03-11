@@ -1,5 +1,8 @@
 package com.backend.backend.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum MetodoPagoEnum {
 
     EFECTIVO("Efectivo"),
@@ -13,7 +16,4 @@ public enum MetodoPagoEnum {
         this.metodoPago = metodoPago;
     }
 
-    public String getMetodoPago() {
-        return metodoPago;
-    }
 }
