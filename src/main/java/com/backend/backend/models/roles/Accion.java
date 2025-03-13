@@ -20,4 +20,7 @@ public class Accion {
 
     @Column(name = "accion", length = 50, nullable = false)
     private String accion;
+
+    @Column(name = "grupo", length = 50, nullable = false)
+    private String grupo;
 }

@@ -2,6 +2,7 @@ package com.backend.backend.services.auth;
 
 import com.backend.backend.dto.LoginUsuarioForm;
 import com.backend.backend.dto.RegistroUsuarioForm;
+import com.backend.backend.dto.RolForm;
 import com.backend.backend.dto.UsuarioDTO;
 import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.models.empleados.Empleado;
@@ -84,20 +85,12 @@ public class AuthServiceImpl implements AuthService {
             empresaService.createEmpresa(empresa);
 
             // Crear y guardar el rol de ADMIN
-            Rol rol = new Rol();
-            rol.setNombre("ADMIN");
-            rol.setDescripcion("Administrador con todos los permisos");
-            rol.setIdEmpresa(empresa.getId());
-            rolService.createRol(rol);
-
-            // Crear y guardar los permisos por defecto
-            List<Accion> acciones = accionService.getAcciones();
-            for (Accion accion : acciones) {
-                Permiso permiso = new Permiso();
-                permiso.setRol(rol);
-                permiso.setAccion(accion);
-                permisoService.createPermiso(permiso);
-            }
+            RolForm rolForm = new RolForm();
+            rolForm.setNombre("ADMIN");
+            rolForm.setDescripcion("Administrador con todos los permisos");
+            rolForm.setIdEmpresa(empresa.getId());
+            rolForm.setAcciones(accionService.getAcciones());
+            Rol rol = rolService.createRol(rolForm);
 
             // Crear el usuario
             Usuario usuario = new Usuario();
