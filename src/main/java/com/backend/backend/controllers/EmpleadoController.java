@@ -8,7 +8,6 @@ import com.backend.backend.filters.EmpleadoFilter;
 import com.backend.backend.models.empleados.Empleado;
 import com.backend.backend.models.usuarios.Usuario;
 import com.backend.backend.services.empleados.EmpleadoService;
-import com.backend.backend.services.usuarios.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,9 @@ public class EmpleadoController {
 
     private final ObjectMapper objectMapper;
 
-    private final UsuarioService usuarioService;
-
-    public EmpleadoController(EmpleadoService empleadoService, ObjectMapper objectMapper, UsuarioService usuarioService) {
+    public EmpleadoController(EmpleadoService empleadoService, ObjectMapper objectMapper) {
         this.empleadoService = empleadoService;
         this.objectMapper = objectMapper;
-        this.usuarioService = usuarioService;
     }
 
     @RequiresPermission("ACCESO_EMPLEADOS")

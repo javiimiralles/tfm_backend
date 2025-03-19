@@ -15,8 +15,9 @@ public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_pedido", nullable = false)
-    private Long idPedido;
+    @OneToOne
+    @JoinColumn(name = "id_pedido", referencedColumnName = "id", nullable = false)
+    private Pedido pedido;
 
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;
