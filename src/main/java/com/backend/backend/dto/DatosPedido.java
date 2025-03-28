@@ -15,5 +15,7 @@ public class DatosPedido {
 
     private MetodoPagoEnum metodoPago;
 
+    private String observaciones;
+
     private List<DetallePedido> detallesPedido;
 }

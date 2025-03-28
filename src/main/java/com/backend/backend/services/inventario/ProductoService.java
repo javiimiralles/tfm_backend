@@ -10,9 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface ProductoService {
     Producto getProductoById(Long id);
+
+    List<Producto> findProductosByEmpresa(Long idEmpresa);
 
     Page<ProductoDTO> findProductosDTOByFilter(ProductoFilter filter) throws BusinessException;
 

@@ -29,15 +29,18 @@ public class Pedido {
     @Column(name = "fecha_pedido", nullable = false)
     private Date fechaPedido;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "estado", nullable = false)
     private EstadoPedidoEnum estado;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo", nullable = false)
     private TipoPedidoEnum tipo;
 
     @Column(name = "fecha_actualizacion")
     private Date fechaActualizacion;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "metodo_pago", nullable = false)
     private MetodoPagoEnum metodoPago;
 

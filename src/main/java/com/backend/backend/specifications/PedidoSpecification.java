@@ -27,13 +27,13 @@ public class PedidoSpecification {
                 predicates.add(cb.equal(root.get("fechaPedido"), filter.getFechaPedido()));
             }
             if (filter.getEstado() != null) {
-                predicates.add(cb.equal(root.get("estado"), filter.getEstado()));
+                predicates.add(cb.equal(root.get("estado"), filter.getEstado().ordinal()));
             }
             if (filter.getTipo() != null) {
-                predicates.add(cb.equal(root.get("tipo"), filter.getTipo()));
+                predicates.add(cb.equal(root.get("tipo"), filter.getTipo().ordinal()));
             }
             if (filter.getMetodoPago() != null) {
-                predicates.add(cb.equal(root.get("metodoPago"), filter.getMetodoPago()));
+                predicates.add(cb.equal(root.get("metodoPago"), filter.getMetodoPago().ordinal()));
             }
             if (filter.getCosteTotal() != null) {
                 predicates.add(cb.equal(root.get("costeTotal"), filter.getCosteTotal()));

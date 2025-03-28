@@ -47,11 +47,10 @@ public class PedidoController {
         }
     }
 
-    @RequiresPermission("CREACION_PRESPUESTOS")
-    @PostMapping(value = "/presupuestos", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> createPresupuesto(@RequestPart("datosPedido") String datosPedidoJson, @RequestHeader("idResponsable") Long idResponsable) {
+    @RequiresPermission("CREACION_PRESUPUESTOS")
+    @PostMapping(value = "/presupuestos")
+    public ResponseEntity<Object> createPresupuesto(@RequestBody DatosPedido datosPedido, @RequestHeader("idResponsable") Long idResponsable) {
         try {
-            DatosPedido datosPedido = objectMapper.readValue(datosPedidoJson, DatosPedido.class);
             pedidoService.createPresupuesto(datosPedido, idResponsable);
             return ResponseEntity.ok(new HttpResponse(true, "Presupuesto creado correctamente"));
         } catch (Exception e) {
@@ -59,8 +58,30 @@ public class PedidoController {
         }
     }
 
-    @RequiresPermission("ELIMINACION_PRESPUESTOS")
-    @DeleteMapping("/presupuestos/{id}")
+    @RequiresPermission("EDICION_PRESUPUESTOS")
+    @PutMapping("/presupuestos/{id}")
+    public ResponseEntity<Object> updatePresupuesto(@PathVariable Long id, @RequestBody DatosPedido datosPedido, @RequestHeader("idResponsable") Long idResponsable) {
+        try {
+            pedidoService.updatePresupuesto(id, datosPedido, idResponsable);
+            return ResponseEntity.ok(new HttpResponse(true, "Presupuesto actualizado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
+
+    @RequiresPermission("CREACION_PEDIDOS")
+    @PutMapping("/presupuestos/aceptar/{id}")
+    public ResponseEntity<Object> aceptarPresupuesto(@PathVariable Long id, @RequestHeader("idResponsable") Long idResponsable) {
+        try {
+            pedidoService.aceptarPresupuesto(id, idResponsable);
+            return ResponseEntity.ok(new HttpResponse(true, "Presupuesto aceptado correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
+
+    @RequiresPermission("ELIMINACION_PRESUPUESTOS")
+    @PutMapping("/presupuestos/cancelar/{id}")
     public ResponseEntity<Object> cancelarPresupuesto(@PathVariable Long id, @RequestHeader("idResponsable") Long idResponsable) {
         try {
             pedidoService.cancelarPresupuesto(id, idResponsable);

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +49,12 @@ public class ProductoServiceImpl implements ProductoService {
     public Producto getProductoById(Long id) {
         logger.log(Level.INFO, "Buscando producto con id: {0}", id);
         return productoRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Producto> findProductosByEmpresa(Long idEmpresa) {
+        logger.log(Level.INFO, "Buscando productos de la empresa con id: {0}", idEmpresa);
+        return productoRepository.findByIdEmpresa(idEmpresa);
     }
 
     @Override

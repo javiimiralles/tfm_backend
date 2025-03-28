@@ -1,5 +1,6 @@
 package com.backend.backend.controllers;
 
+import com.backend.backend.annotations.RequiresPermission;
 import com.backend.backend.dto.HttpResponse;
 import com.backend.backend.models.proveedores.DetallePedidoProveedor;
 import com.backend.backend.services.proveedores.DetallePedidoProveedorService;
@@ -21,6 +22,7 @@ public class DetallePedidoProveedorController {
         this.detallePedidoProveedorService = detallePedidoProveedorService;
     }
 
+    @RequiresPermission("ACCESO_PEDIDOS_PROVEEDORES")
     @GetMapping("/pedido/{idPedidoProveedor}")
     public ResponseEntity<Object> findDetallesPedidoProveedorByIdPedidoProveedor(@PathVariable Long idPedidoProveedor) {
         List<DetallePedidoProveedor> detalles = detallePedidoProveedorService.findDetallesPedidoProveedorByIdPedidoProveedor(idPedidoProveedor);

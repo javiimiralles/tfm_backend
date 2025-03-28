@@ -17,6 +17,12 @@ public interface PedidoService {
     void createPresupuesto(DatosPedido datosPedido, Long idResponsable);
 
     @Transactional
+    void updatePresupuesto(Long idPedido, DatosPedido datosPedido, Long idResponsable);
+
+    @Transactional
+    void aceptarPresupuesto(Long idPedido, Long idResponsable);
+
+    @Transactional
     void cancelarPresupuesto(Long idPedido, Long idResponsable);
 
     @Transactional

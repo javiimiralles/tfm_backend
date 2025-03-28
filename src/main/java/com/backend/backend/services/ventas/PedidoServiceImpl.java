@@ -85,26 +85,107 @@ public class PedidoServiceImpl implements PedidoService {
             throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
         }
 
-        BigDecimal costeTotal = BigDecimal.ZERO;
-        for (DetallePedido detalle : datosPedido.getDetallesPedido()) {
-            BigDecimal costeUnitario = productoService.getCosteProducto(detalle.getProducto().getId());
-            detalle.setPrecioUnitario(costeUnitario);
-            detalle.setSubtotal(costeUnitario.multiply(BigDecimal.valueOf(detalle.getCantidad())));
-            costeTotal = costeTotal.add(detalle.getSubtotal());
-        }
+        BigDecimal costeTotal = calcularCosteTotal(datosPedido.getDetallesPedido());
 
         Pedido pedido = new Pedido();
         pedido.setIdEmpresa(datosPedido.getIdEmpresa());
         pedido.setCliente(clienteService.getClienteById(datosPedido.getIdCliente()));
+        pedido.setObservaciones(datosPedido.getObservaciones());
         pedido.setEstado(EstadoPedidoEnum.PENDIENTE);
         pedido.setTipo(TipoPedidoEnum.PRESUPUESTO);
         pedido.setCosteTotal(costeTotal);
+        pedido.setFechaPedido(new Date());
         pedido = pedidoRepository.save(pedido);
 
         for (DetallePedido detalle : datosPedido.getDetallesPedido()) {
             detalle.setIdPedido(pedido.getId());
             detallePedidoRepository.save(detalle);
         }
+    }
+
+    @Transactional
+    @Override
+    public void updatePresupuesto(Long idPedido, DatosPedido datosPedido, Long idResponsable) {
+        logger.log(Level.INFO, "Editando presupuesto: {}", datosPedido);
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, datosPedido.getIdEmpresa())) {
+            throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
+        }
+
+        Pedido pedido = pedidoRepository.findById(idPedido).orElse(null);
+        if (pedido == null) {
+            logger.log(Level.WARNING, "El pedido con id {} no existe", idPedido);
+            throw new BusinessException("El pedido no existe");
+        }
+
+        if (!pedido.getTipo().equals(TipoPedidoEnum.PRESUPUESTO)) {
+            logger.log(Level.WARNING, "El pedido con id {} no es un presupuesto", idPedido);
+            throw new BusinessException("No se pueden editar los pedidos");
+        }
+
+        BigDecimal costeTotal = calcularCosteTotal(datosPedido.getDetallesPedido());
+
+        pedido.setCliente(clienteService.getClienteById(datosPedido.getIdCliente()));
+        pedido.setObservaciones(datosPedido.getObservaciones());
+        pedido.setCosteTotal(costeTotal);
+        pedido = pedidoRepository.save(pedido);
+
+        List<DetallePedido> existingDetalles = detallePedidoRepository.findByIdPedido(idPedido);
+        List<DetallePedido> newDetalles = datosPedido.getDetallesPedido();
+
+        //Actualizar/eliminar los detalles existentes
+        for (DetallePedido existingDetalle : existingDetalles) {
+            boolean found = false;
+            for (DetallePedido newDetalle : newDetalles) {
+                if (existingDetalle.getId().equals(newDetalle.getId())) {
+                    existingDetalle.setCantidad(newDetalle.getCantidad());
+                    existingDetalle.setPrecioUnitario(newDetalle.getPrecioUnitario());
+                    existingDetalle.setSubtotal(newDetalle.getSubtotal());
+                    detallePedidoRepository.save(existingDetalle);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                detallePedidoRepository.delete(existingDetalle);
+            }
+        }
+
+        // Añadir los nuevos detalles
+        for (DetallePedido newDetalle : newDetalles) {
+            if (newDetalle.getId() == null) {
+                newDetalle.setIdPedido(pedido.getId());
+                detallePedidoRepository.save(newDetalle);
+            }
+        }
+
+    }
+
+    @Transactional
+    @Override
+    public void aceptarPresupuesto(Long idPedido, Long idResponsable) {
+        logger.log(Level.INFO, "Aceptando presupuesto con id: {}", idPedido);
+
+        Pedido pedido = pedidoRepository.findById(idPedido).orElse(null);
+        if (pedido == null) {
+            logger.log(Level.WARNING, "El pedido con id {} no existe", idPedido);
+            throw new BusinessException("El pedido no existe");
+        }
+
+        if (!usuarioService.validateUsuarioResponsable(idResponsable, pedido.getIdEmpresa())) {
+            throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
+        }
+
+        pedido.setTipo(TipoPedidoEnum.PEDIDO);
+        pedido.setFechaPedido(new Date());
+        pedidoRepository.save(pedido);
+
+        HistorialPedido historialPedido = new HistorialPedido();
+        historialPedido.setIdPedido(pedido.getId());
+        historialPedido.setEstadoNuevo(EstadoPedidoEnum.PENDIENTE);
+        historialPedido.setIdRespModif(idResponsable);
+        historialPedido.setFechaModif(new Date());
+        historialPedidoRepository.save(historialPedido);
     }
 
     @Transactional
@@ -135,17 +216,12 @@ public class PedidoServiceImpl implements PedidoService {
             throw new BusinessException("El empleado responsable de creación no existe o no pertenece a la empresa");
         }
 
-        BigDecimal costeTotal = BigDecimal.ZERO;
-        for (DetallePedido detalle : datosPedido.getDetallesPedido()) {
-            BigDecimal costeUnitario = productoService.getCosteProducto(detalle.getProducto().getId());
-            detalle.setPrecioUnitario(costeUnitario);
-            detalle.setSubtotal(costeUnitario.multiply(BigDecimal.valueOf(detalle.getCantidad())));
-            costeTotal = costeTotal.add(detalle.getSubtotal());
-        }
+        BigDecimal costeTotal = calcularCosteTotal(datosPedido.getDetallesPedido());
 
         Pedido pedido = new Pedido();
         pedido.setIdEmpresa(datosPedido.getIdEmpresa());
         pedido.setCliente(clienteService.getClienteById(datosPedido.getIdCliente()));
+        pedido.setObservaciones(datosPedido.getObservaciones());
         pedido.setFechaPedido(new Date());
         pedido.setEstado(EstadoPedidoEnum.PENDIENTE);
         pedido.setTipo(TipoPedidoEnum.PEDIDO);
@@ -219,5 +295,16 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setFechaActualizacion(new Date());
         pedido.setEstado(nuevoEstado);
         pedidoRepository.save(pedido);
+    }
+
+    private BigDecimal calcularCosteTotal(List<DetallePedido> detalles) {
+        BigDecimal costeTotal = BigDecimal.ZERO;
+        for (DetallePedido detalle : detalles) {
+            BigDecimal costeUnitario = productoService.getCosteProducto(detalle.getProducto().getId());
+            detalle.setPrecioUnitario(costeUnitario);
+            detalle.setSubtotal(costeUnitario.multiply(BigDecimal.valueOf(detalle.getCantidad())));
+            costeTotal = costeTotal.add(detalle.getSubtotal());
+        }
+        return costeTotal;
     }
 }

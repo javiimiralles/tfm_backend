@@ -37,6 +37,12 @@ public class ProductoController {
     }
 
     @RequiresPermission("ACCESO_PRODUCTOS")
+    @GetMapping("/empresa/{idEmpresa}")
+    public ResponseEntity<Object> findProductosByEmpresa(@PathVariable Long idEmpresa) {
+        return ResponseEntity.ok(new HttpResponse(true, "Productos obtenidos correctamente", productoService.findProductosByEmpresa(idEmpresa)));
+    }
+
+    @RequiresPermission("ACCESO_PRODUCTOS")
     @PostMapping("/filter")
     public ResponseEntity<Object> findProductosDTOByFilter(@RequestBody ProductoFilter filter) {
         try {
