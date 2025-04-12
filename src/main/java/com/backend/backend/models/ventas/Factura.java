@@ -1,5 +1,6 @@
 package com.backend.backend.models.ventas;
 
+import com.backend.backend.models.clientes.Cliente;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,8 +23,15 @@ public class Factura {
     @Column(name = "id_empresa", nullable = false)
     private Long idEmpresa;
 
+    @ManyToOne
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id", nullable = false)
+    private Cliente cliente;
+
     @Column(name = "fecha_factura", nullable = false)
     private Date fechaFactura;
+
+    @Column(name = "fecha_vencimiento", nullable = false)
+    private Date fechaVencimiento;
 
     @Column(name = "importe", nullable = false)
     private BigDecimal importe;

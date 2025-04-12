@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface EmpresaService {
 
+    Empresa getEmpresaById(Long id);
+
     @Transactional
     void createEmpresa(Empresa empresa);
 }

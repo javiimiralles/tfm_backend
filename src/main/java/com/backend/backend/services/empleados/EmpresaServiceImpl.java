@@ -19,6 +19,12 @@ public class EmpresaServiceImpl implements EmpresaService {
         this.empresaRepository = empresaRepository;
     }
 
+    @Override
+    public Empresa getEmpresaById(Long id) {
+        logger.info("Buscando empresa con ID: " + id);
+        return empresaRepository.findById(id).orElse(null);
+    }
+
     @Transactional
     @Override
     public void createEmpresa(Empresa empresa) {

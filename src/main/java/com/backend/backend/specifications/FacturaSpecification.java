@@ -23,6 +23,9 @@ public class FacturaSpecification {
             if (filter.getIdEmpresa() != null) {
                 predicates.add(cb.equal(root.get("idEmpresa"), filter.getIdEmpresa()));
             }
+            if (filter.getIdCliente() != null) {
+                predicates.add(cb.equal(root.get("cliente").get("id"), filter.getIdCliente()));
+            }
             if (filter.getFechaFactura() != null) {
                 predicates.add(cb.equal(root.get("fechaFactura"), filter.getFechaFactura()));
             }

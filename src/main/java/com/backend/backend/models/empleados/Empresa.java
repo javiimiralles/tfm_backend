@@ -17,6 +17,9 @@ public class Empresa {
     @Column(name = "nombre", length = 150, nullable = false)
     private String nombre;
 
+    @Column(name = "cif", length = 10)
+    private String cif;
+
     @Column(name = "razon_social", length = 50, nullable = false)
     private String razonSocial;
 

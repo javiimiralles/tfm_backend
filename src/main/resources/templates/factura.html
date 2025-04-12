@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Factura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 40px;
+            color: #333;
+        }
+
+        h1 {
+            color: #0074D9;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .empresa-logo {
+            text-align: right;
+        }
+
+        .datos-factura {
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .datos-factura p {
+            margin: 2px 0;
+        }
+
+        .datos-contacto div {
+            width: 48%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .resumen {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .resumen td {
+            padding: 5px;
+        }
+
+        .resumen-right {
+            text-align: right;
+        }
+
+        .observaciones {
+            margin-top: 30px;
+        }
+
+        .comentarios strong {
+            color: #0074D9;
+        }
+
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a8f;
+        }
+    </style>
+</head>
+<body>
+    <div class="encabezado">
+        <h1>Factura</h1>
+    </div>
+
+    <div class="datos-factura">
+        <p><strong>Número de factura:</strong> <span th:text="${numeroFactura}"></span></p>
+        <p><strong>Fecha de factura:</strong>
+            <span th:text="${#dates.format(fechaFactura, 'dd MMM yyyy')}"></span>
+        </p>
+        <p><strong>Fecha de vencimiento:</strong>
+            <span th:text="${#dates.format(fechaVencimiento, 'dd MMM yyyy')}"></span>
+        </p>
+    </div>
+
+    <div style="display: table; width: 100%; margin-bottom: 20px;">
+        <div style="display: table-cell; width: 50%; vertical-align: top;">
+            <p><strong th:text="${nombreEmpresa}">Emisor</strong></p>
+            <p th:if="${razonSocialEmpresa != null} and !${#strings.isEmpty(razonSocialEmpresa)}"
+               th:text="'Razón Social: ' + ${razonSocialEmpresa}"></p>
+            <p th:if="${cifEmpresa != null} and !${#strings.isEmpty(cifEmpresa)}"
+               th:text="'CIF: ' + ${cifEmpresa}"></p>
+            <p th:if="${direccionEmpresa != null} and !${#strings.isEmpty(direccionEmpresa)}"
+               th:text="'Dirección: ' + ${direccionEmpresa}"></p>
+            <p th:if="${telefonoEmpresa != null} and !${#strings.isEmpty(telefonoEmpresa)}"
+               th:text="'Teléfono: ' + ${telefonoEmpresa}"></p>
+            <p th:if="${emailEmpresa != null} and !${#strings.isEmpty(emailEmpresa)}"
+               th:text="'Email: ' + ${emailEmpresa}"></p>
+        </div>
+        <div style="display: table-cell; width: 50%; vertical-align: top;">
+            <p><strong th:text="${nombreCliente}">Cliente</strong></p>
+            <p th:if="${nifCliente != null} and !${#strings.isEmpty(nifCliente)}"
+               th:text="'NIF: ' + ${nifCliente}"></p>
+            <p th:if="${direccionCliente != null} and !${#strings.isEmpty(direccionCliente)}"
+               th:text="'Dirección: ' + ${direccionCliente}"></p>
+            <p th:if="${telefonoCliente != null} and !${#strings.isEmpty(telefonoCliente)}"
+               th:text="'Teléfono: ' + ${telefonoCliente}"></p>
+            <p th:if="${emailCliente != null} and !${#strings.isEmpty(emailCliente)}"
+               th:text="'Email: ' + ${emailCliente}"></p>
+        </div>
+    </div>
+
+
+    <table>
+        <thead>
+        <tr>
+            <th>Descripción</th>
+            <th>Unidades</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${detalles}">
+            <td th:text="${item.getProducto().getNombre()}"></td>
+            <td th:text="${item.getCantidad()}"></td>
+            <td th:text="${item.getPrecioUnitario()} + ' €'"></td>
+            <td th:text="${item.getSubtotal()} + ' €'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="resumen">
+        <tr>
+            <td class="resumen-right total">TOTAL:</td>
+            <td class="resumen-right total" th:text="${totalFactura} + ' €'">0.00 €</td>
+        </tr>
+    </table>
+
+    <div class="observaciones">
+        <p><strong>Observaciones:</strong></p>
+        <p th:text="${observaciones}"></p>
+    </div>
+</body>
+</html>

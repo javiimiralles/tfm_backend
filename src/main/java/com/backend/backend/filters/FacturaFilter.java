@@ -15,6 +15,8 @@ public class FacturaFilter {
 
     private Long idEmpresa;
 
+    private Long idCliente;
+
     private Date fechaFactura;
 
     private BigDecimal importe;
