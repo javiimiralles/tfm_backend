@@ -24,4 +24,14 @@ public enum EstadoPedidoProveedorEnum {
         }
         return null;
     }
+
+    public static int getEstadoPedidoProveedorEnumId(EstadoPedidoProveedorEnum estadoPedidoProveedor){
+        for(EstadoPedidoProveedorEnum estado : EstadoPedidoProveedorEnum.values()){
+            if(estado.equals(estadoPedidoProveedor)){
+                return estado.ordinal();
+            }
+        }
+        return -1;
+
+    }
 }
