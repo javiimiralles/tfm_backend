@@ -16,5 +16,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long>, JpaSpecif
     Page<Pedido> findAll(Pageable pageable);
 
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.fechaPedido >= :fechaInicio AND p.estado IN (:estados) AND p.idEmpresa = :idEmpresa")
-    int countPedidosUltimos30DiasConEstados(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa, @Param("estados") List<EstadoPedidoEnum> estados);
+    int countPedidosConFechaLimiteYEstados(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa, @Param("estados") List<EstadoPedidoEnum> estados);
 }

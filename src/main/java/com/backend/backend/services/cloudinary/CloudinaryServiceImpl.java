@@ -15,8 +15,8 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
     public CloudinaryServiceImpl(@Value("${cloudinary.cloud-name}") String cloudName,
-                                 @Value("${cloudinary.api-key}") String apiKey,
-                                 @Value("${cloudinary.api-secret}") String apiSecret) {
+            @Value("${cloudinary.api-key}") String apiKey,
+            @Value("${cloudinary.api-secret}") String apiSecret) {
         cloudinary = new Cloudinary("cloudinary://" + apiKey + ":" + apiSecret + "@" + cloudName);
     }
 

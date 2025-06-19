@@ -16,9 +16,11 @@ public interface PedidoProveedorRepository extends JpaRepository<PedidoProveedor
     Page<PedidoProveedor> findAll(Pageable pageable);
 
     @Query("SELECT p FROM PedidoProveedor p WHERE p.fechaPedido >= :fechaInicio AND p.estado = :estado AND p.idEmpresa = :idEmpresa")
-    List<PedidoProveedor> findPedidosUltimos30DiasConEstado(@Param("fechaInicio") Date fechaInicio, @Param("estado") EstadoPedidoProveedorEnum estado, @Param("idEmpresa") Long idEmpresa);
+    List<PedidoProveedor> findPedidosConFechaLimiteYEstado(@Param("fechaInicio") Date fechaInicio, @Param("estado") EstadoPedidoProveedorEnum estado, @Param("idEmpresa") Long idEmpresa);
 
     @Query("SELECT COUNT(p) FROM PedidoProveedor p WHERE p.fechaPedido >= :fechaInicio AND p.estado IN (:estados) AND p.idEmpresa = :idEmpresa")
-    int countPedidosUltimos30DiasConEstados(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa, @Param("estados") List<EstadoPedidoProveedorEnum> estados);
+    int countPedidosConFechaLimiteYEstados(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa, @Param("estados") List<EstadoPedidoProveedorEnum> estados);
+
+
 
 }

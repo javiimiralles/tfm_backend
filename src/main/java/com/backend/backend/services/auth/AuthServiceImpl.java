@@ -7,14 +7,11 @@ import com.backend.backend.dto.UsuarioDTO;
 import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.models.empleados.Empleado;
 import com.backend.backend.models.empleados.Empresa;
-import com.backend.backend.models.roles.Accion;
-import com.backend.backend.models.roles.Permiso;
 import com.backend.backend.models.roles.Rol;
 import com.backend.backend.models.usuarios.Usuario;
 import com.backend.backend.services.empleados.EmpleadoService;
 import com.backend.backend.services.empleados.EmpresaService;
 import com.backend.backend.services.roles.AccionService;
-import com.backend.backend.services.roles.PermisoService;
 import com.backend.backend.services.roles.RolService;
 import com.backend.backend.services.usuarios.UsuarioService;
 import com.backend.backend.utils.JWTUtil;
@@ -25,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,8 +36,6 @@ public class AuthServiceImpl implements AuthService {
 
     private final AccionService accionService;
 
-    private final PermisoService permisoService;
-
     private final EmpleadoService empleadoService;
 
     private final PasswordEncoder passwordEncoder;
@@ -54,14 +47,13 @@ public class AuthServiceImpl implements AuthService {
     Logger logger = Logger.getLogger(AuthServiceImpl.class.getName());
 
     public AuthServiceImpl(EmpresaService empresaService, UsuarioService usuarioService,
-                          RolService rolService, EmpleadoService empleadoService,
-                          AccionService accionService, PermisoService permisoService,
-                          PasswordEncoder passwordEncoder, JWTUtil jwtUtil, MapperUtil mapperUtil) {
+            RolService rolService, EmpleadoService empleadoService,
+            AccionService accionService, PasswordEncoder passwordEncoder,
+            JWTUtil jwtUtil, MapperUtil mapperUtil) {
         this.usuarioService = usuarioService;
         this.empresaService = empresaService;
         this.rolService = rolService;
         this.accionService = accionService;
-        this.permisoService = permisoService;
         this.empleadoService = empleadoService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;

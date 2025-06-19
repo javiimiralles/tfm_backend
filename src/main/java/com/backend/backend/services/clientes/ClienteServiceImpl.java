@@ -5,7 +5,6 @@ import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.filters.ClienteFilter;
 import com.backend.backend.models.clientes.Cliente;
 import com.backend.backend.repository.ClienteRepository;
-import com.backend.backend.services.empleados.EmpleadoService;
 import com.backend.backend.services.usuarios.UsuarioService;
 import com.backend.backend.specifications.ClienteSpecification;
 import com.backend.backend.utils.MapperUtil;
@@ -27,17 +26,13 @@ public class ClienteServiceImpl implements ClienteService {
 
     private final UsuarioService usuarioService;
 
-    private final EmpleadoService empleadoService;
-
     private final MapperUtil mapperUtil;
 
     Logger logger = Logger.getLogger(ClienteServiceImpl.class.getName());
 
-    public ClienteServiceImpl(ClienteRepository clienteRepository, UsuarioService usuarioService,
-                              EmpleadoService empleadoService, MapperUtil mapperUtil) {
+    public ClienteServiceImpl(ClienteRepository clienteRepository, UsuarioService usuarioService, MapperUtil mapperUtil) {
         this.clienteRepository = clienteRepository;
         this.usuarioService = usuarioService;
-        this.empleadoService = empleadoService;
         this.mapperUtil = mapperUtil;
     }
 

@@ -26,4 +26,13 @@ public class DashboardController {
             return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
         }
     }
+
+    @GetMapping("/incomes-expenses/{idEmpresa}")
+    public ResponseEntity<Object> getDashboardIcomesExpenses(@PathVariable Long idEmpresa) {
+        try {
+            return ResponseEntity.ok(new HttpResponse(true, "Ingresos y gastos del dashboard obtenidos correctamente", dashboardService.getDashboardIcomesExpenses(idEmpresa)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
 }

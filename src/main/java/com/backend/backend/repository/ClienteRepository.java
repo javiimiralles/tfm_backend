@@ -17,5 +17,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>, JpaSpec
     List<Cliente> findByIdEmpresa(Long idEmpresa);
 
     @Query("SELECT COUNT(c) FROM Cliente c WHERE c.fechaAlta >= :fechaInicio AND c.idEmpresa = :idEmpresa")
-    int countClientesNuevosUltimos30Dias(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa);
+    int countClientesNuevosConFechaLimite(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa);
 }
