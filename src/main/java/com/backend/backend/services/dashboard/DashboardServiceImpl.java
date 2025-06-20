@@ -105,5 +105,20 @@ public class DashboardServiceImpl implements DashboardService {
         return dto;
     }
 
+    @Override
+    public List<Integer> getVentasUltimos6Meses(Long idEmpresa) {
+        List<Integer> ventasUltimos6Meses = new ArrayList<>();
+
+        for (int i = 0; i < 6; i++) {
+            Date fechaInicio = new Date(System.currentTimeMillis() - (i + 1) * 30L * 24 * 60 * 60 * 1000);
+            Date fechaFin = new Date(System.currentTimeMillis() - i * 30L * 24 * 60 * 60 * 1000);
+
+            int ventasMes = pedidoRepository.countPedidosDesdeFechaInicioHastaFechaFinConEstado(fechaInicio, fechaFin, idEmpresa, EstadoPedidoEnum.RECIBIDO);
+            ventasUltimos6Meses.add(ventasMes);
+        }
+
+        return ventasUltimos6Meses;
+    }
+
 
 }

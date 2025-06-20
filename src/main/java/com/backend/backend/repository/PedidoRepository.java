@@ -17,4 +17,12 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long>, JpaSpecif
 
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.fechaPedido >= :fechaInicio AND p.estado IN (:estados) AND p.idEmpresa = :idEmpresa")
     int countPedidosConFechaLimiteYEstados(@Param("fechaInicio") Date fechaInicio, @Param("idEmpresa") Long idEmpresa, @Param("estados") List<EstadoPedidoEnum> estados);
+
+    @Query("SELECT COUNT(p) FROM Pedido p WHERE p.fechaPedido >= :fechaInicio AND fechaPedido <= :fechaFin AND p.estado = :estado AND p.idEmpresa = :idEmpresa")
+    int countPedidosDesdeFechaInicioHastaFechaFinConEstado(
+        @Param("fechaInicio") Date fechaInicio,
+        @Param("fechaFin") Date fechaFin,
+        @Param("idEmpresa") Long idEmpresa,
+        @Param("estado") EstadoPedidoEnum estado
+    );
 }

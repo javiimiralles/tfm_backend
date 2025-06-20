@@ -2,6 +2,9 @@ package com.backend.backend.controllers;
 
 import com.backend.backend.dto.HttpResponse;
 import com.backend.backend.services.dashboard.DashboardService;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +34,16 @@ public class DashboardController {
     public ResponseEntity<Object> getDashboardIcomesExpenses(@PathVariable Long idEmpresa) {
         try {
             return ResponseEntity.ok(new HttpResponse(true, "Ingresos y gastos del dashboard obtenidos correctamente", dashboardService.getDashboardIcomesExpenses(idEmpresa)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/sales/{idEmpresa}")
+    public ResponseEntity<Object> getVentasUltimos6Meses(@PathVariable Long idEmpresa) {
+        try {
+            List<Integer> ventas = dashboardService.getVentasUltimos6Meses(idEmpresa);
+            return ResponseEntity.ok(new HttpResponse(true, "Ventas de los últimos 6 meses obtenidas correctamente", ventas));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new HttpResponse(false, e.getMessage()));
         }
