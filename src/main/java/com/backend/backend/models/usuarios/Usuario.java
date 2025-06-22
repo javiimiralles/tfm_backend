@@ -27,8 +27,8 @@ public class Usuario {
     private Rol rol;
 
     public Set<String> getAccionesPermitidas() {
-        return this.rol.getPermisos().stream()
+        return this.rol.getPermisos() != null ? this.rol.getPermisos().stream()
                 .map(permiso -> permiso.getAccion().getAccion())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()) : Set.of();
     }
 }

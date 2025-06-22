@@ -37,7 +37,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     Logger logger = Logger.getLogger(EmpleadoServiceImpl.class.getName());
 
     public EmpleadoServiceImpl(EmpleadoRepository empleadoRepository, MapperUtil mapperUtil,
-                               UsuarioService usuarioService, CloudinaryService cloudinaryService) {
+                                UsuarioService usuarioService, CloudinaryService cloudinaryService) {
         this.empleadoRepository = empleadoRepository;
         this.mapperUtil = mapperUtil;
         this.usuarioService = usuarioService;
