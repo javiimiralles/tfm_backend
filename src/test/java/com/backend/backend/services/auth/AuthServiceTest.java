@@ -7,14 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.backend.backend.dto.LoginUsuarioForm;
 import com.backend.backend.dto.UsuarioDTO;
 import com.backend.backend.exceptions.BusinessException;
 import com.backend.backend.services.BaseTest;
 
-@SpringBootTest
 public class AuthServiceTest extends BaseTest {
 
     @Autowired

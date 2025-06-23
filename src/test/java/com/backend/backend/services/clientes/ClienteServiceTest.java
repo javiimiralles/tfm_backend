@@ -8,14 +8,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.backend.backend.dto.ClienteDTO;
 import com.backend.backend.filters.ClienteFilter;
 import com.backend.backend.models.clientes.Cliente;
 import com.backend.backend.services.BaseTest;
 
-@SpringBootTest
 public class ClienteServiceTest extends BaseTest {
 
     @Autowired

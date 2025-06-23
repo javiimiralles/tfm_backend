@@ -23,4 +23,10 @@ public class AccionServiceImpl implements AccionService {
         logger.info("Obteniendo acciones");
         return accionRepository.findAll();
     }
+
+    @Override
+    public Accion createAccion(Accion accion) {
+        logger.info("Creando accion: " + accion.getNombre());
+        return accionRepository.save(accion);
+    }
 }

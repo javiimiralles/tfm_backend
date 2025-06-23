@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AccionService {
     List<Accion> getAcciones();
+
+    Accion createAccion(Accion accion);
 }
