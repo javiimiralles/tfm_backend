@@ -91,7 +91,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             }
 
             if (!usuario.getEmail().equals(usuarioToUpdate.getEmail())) {
-               logger.warning("No se puede cambiar el email de un usuario");
+                logger.warning("No se puede cambiar el email de un usuario");
                 throw new BusinessException("No se puede cambiar el email de un usuario");
             }
 

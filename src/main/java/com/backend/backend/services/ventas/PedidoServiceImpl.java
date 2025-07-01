@@ -300,7 +300,7 @@ public class PedidoServiceImpl implements PedidoService {
     private BigDecimal calcularCosteTotal(List<DetallePedido> detalles) {
         BigDecimal costeTotal = BigDecimal.ZERO;
         for (DetallePedido detalle : detalles) {
-            BigDecimal costeUnitario = productoService.getCosteProducto(detalle.getProducto().getId());
+            BigDecimal costeUnitario = productoService.getPrecioVentaProducto(detalle.getProducto().getId());
             detalle.setPrecioUnitario(costeUnitario);
             detalle.setSubtotal(costeUnitario.multiply(BigDecimal.valueOf(detalle.getCantidad())));
             costeTotal = costeTotal.add(detalle.getSubtotal());

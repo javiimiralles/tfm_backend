@@ -21,6 +21,8 @@ public interface ProductoService {
 
     BigDecimal getCosteProducto(Long id);
 
+    BigDecimal getPrecioVentaProducto(Long id);
+
     @Transactional
     void createProducto(Producto producto, MultipartFile imagen, Long idResponsable) throws IOException;
 

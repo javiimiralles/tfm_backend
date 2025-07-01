@@ -37,7 +37,6 @@ public class EmpleadoController {
         return ResponseEntity.ok(new HttpResponse(true, "Empleado obtenido correctamente", empleado));
     }
 
-    @RequiresPermission("ACCESO_EMPLEADOS")
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<Object> getEmpleadoByIdUsuario(@PathVariable Long idUsuario) {
         Empleado empleado = empleadoService.getEmpleadoByIdUsuario(idUsuario);

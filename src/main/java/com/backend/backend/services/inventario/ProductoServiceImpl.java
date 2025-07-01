@@ -79,7 +79,22 @@ public class ProductoServiceImpl implements ProductoService {
         if (producto == null) {
             throw new BusinessException("El producto no existe");
         }
-        return producto.getCoste();
+        BigDecimal coste = producto.getCoste();
+        BigDecimal impuesto = producto.getImpuestoCompra();
+        BigDecimal resultado = coste.add(coste.multiply(impuesto.divide(BigDecimal.valueOf(100))));
+        return resultado;
+    }
+
+    @Override
+    public BigDecimal getPrecioVentaProducto(Long id) {
+        Producto producto = productoRepository.findById(id).orElse(null);
+        if (producto == null) {
+            throw new BusinessException("El producto no existe");
+        }
+        BigDecimal precioVenta = producto.getPrecioVenta();
+        BigDecimal impuesto = producto.getImpuestoVenta();
+        BigDecimal resultado = precioVenta.add(precioVenta.multiply(impuesto.divide(BigDecimal.valueOf(100))));
+        return resultado;
     }
 
     @Transactional

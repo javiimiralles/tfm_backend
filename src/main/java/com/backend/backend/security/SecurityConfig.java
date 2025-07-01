@@ -57,9 +57,19 @@ public class SecurityConfig implements WebMvcConfigurer {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives("default-src 'self'; " +
+                                                "script-src 'self' https://res.cloudinary.com; " +
+                                                "img-src 'self' https://res.cloudinary.com; " +
+                                                "style-src 'self' 'unsafe-inline'; " +
+                                                "connect-src 'self' https://api.cloudinary.com;"))
+                        .frameOptions(frameOptions -> frameOptions.deny())
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").hasRole(ADMIN)
                         .requestMatchers("/api/clientes/**").hasRole(ADMIN)
+                        .requestMatchers("/latest/meta-data/**").denyAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
